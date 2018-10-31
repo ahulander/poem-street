@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node ./build/server.js",
-    "client": "npx webpack --watch"
+    "client-compile": "tsc -w",
+    "client-pack": "npx webpack --watch",
+    "client": "start npm run client-compile && start npm run client-pack"
   },
   "author": "",
   "license": "ISC",
