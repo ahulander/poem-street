@@ -1,6 +1,10 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "outDir": "./build"
+        "outDir": "./build",
+        "lib": [
+            "dom",
+            "es2015"
+        ]
     }
 }
