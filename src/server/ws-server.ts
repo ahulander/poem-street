@@ -20,16 +20,8 @@ function connecting(message: BaseClientMessage) {
     console.log("Client connecting...");
 }
 
-function song(message: BaseClientMessage) {
-    console.log("Client is singing a song!");
-}
-
 const messageHandlers: FuncMessageHandler[] = [];
 messageHandlers[WSClientMessageTypes.Connecting] = connecting;
-messageHandlers[WSClientMessageTypes.Song] = song;
-
-
-
 
 /*
     Helper functions
@@ -117,7 +109,7 @@ export function createWebSocketServer(server: http.Server) {
         });
     
         // Send welcome message to the client!
-        ws.send(JSON.stringify({type: WSServerMessageTypes.Welcome}));
+        ws.send(JSON.stringify({type: WSServerMessageTypes.Connected}));
     });
 
     return wss;

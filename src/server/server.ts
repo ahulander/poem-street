@@ -25,7 +25,7 @@ const wss = createWebSocketServer(server);
 
 setInterval(() => {
     wss.clients.forEach(client => {
-        client.send(JSON.stringify({type: WSServerMessageTypes.Sing}));
+        // client.send(JSON.stringify({type: WSServerMessageTypes.Disconnected}));
     })
 }, 1000);
 
