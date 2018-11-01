@@ -1,10 +1,17 @@
 const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = {
+module.exports = [{
+  watch: true,
+  mode: 'development',
   entry: './build/client/client.js',
   output: {
     path: path.resolve(__dirname, 'public'),
-    filename: 'index.js'
+    filename: '[name].js',
   },
-  watch: true
-};
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  }
+}];

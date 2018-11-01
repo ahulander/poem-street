@@ -1,4 +1,7 @@
 /node_modules
 /build
-/public/index.js
+/public/main.js
+/public/vendors~main.js
+/public/assets
+/src/types
 package-lock.json
