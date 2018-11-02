@@ -17,7 +17,9 @@ import { BaseClientMessage, WSServerMessageTypes, WSClientMessageTypes } from '.
 type FuncMessageHandler = (message: any) => void;
 
 function connecting(message: BaseClientMessage) {
-    console.log("Client connecting...");
+    console.log(`Connected: ${message.token}`);
+    const session = getUserSession(message.token);
+    session.socket.send(JSON.stringify({ type: WSServerMessageTypes.Connected }));
 }
 
 const messageHandlers: FuncMessageHandler[] = [];
@@ -77,7 +79,6 @@ function connectWebSocket(ws: WebSocket2, token: string) {
 
     ws.userToken = token;
     session.socket = ws;
-    console.log(`Connected: ${token}`);
 }
 
 function handleMessage(message: BaseClientMessage) {
@@ -94,9 +95,6 @@ export function createWebSocketServer(server: http.Server) {
 
         //connection is up, let's add a simple simple event
         ws.on('message', (messageJson: string) => {
-    
-            console.log(messageJson);
-    
             const message: BaseClientMessage = parseMessage(messageJson);
             if (!message || !validateMessage(message, ws)) {
                 const reason = extractReason(message, ws);
@@ -120,9 +118,6 @@ export function createWebSocketServer(server: http.Server) {
                 disconnectWebSocket(ws);
             }
         });
-    
-        // Send welcome message to the client!
-        ws.send(JSON.stringify({type: WSServerMessageTypes.Connected}));
     });
 
     return wss;

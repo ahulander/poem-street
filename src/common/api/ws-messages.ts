@@ -21,3 +21,7 @@ export interface BaseClientMessage {
 export interface BaseServerMessage {
     type: WSServerMessageTypes;
 }
+
+export interface ConnectedToServer extends BaseServerMessage {
+    type: WSServerMessageTypes.Connected;
+}

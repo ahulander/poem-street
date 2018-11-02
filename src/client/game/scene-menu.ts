@@ -1,6 +1,7 @@
 import { SceneNames } from "./scene-utility";
-import CWS from "../api/ws-client";
+import CWS, { FuncMessageHandler } from "../api/ws-client";
 import * as API from "../api";
+import { WSClientMessageTypes, WSServerMessageTypes, ConnectedToServer } from "../../common/api/ws-messages";
 
 export class SceneMenu extends Phaser.Scene {
     
@@ -8,6 +9,8 @@ export class SceneMenu extends Phaser.Scene {
     private btnLogin: HTMLButtonElement;
     private inputUsername: HTMLInputElement;
     private inputPassword: HTMLInputElement;
+
+    private messageHandlers: FuncMessageHandler[] = [];
 
     constructor() {
         super({key: SceneNames.Menu});
@@ -17,24 +20,28 @@ export class SceneMenu extends Phaser.Scene {
         this.inputUsername = <HTMLInputElement>document.getElementById("input_username");
         this.inputPassword = <HTMLInputElement>document.getElementById("input_password");
 
-        this.btnLogin.onclick = async () => {
-            const response = await API.login(this.inputUsername.value, this.inputPassword.value);
-            if (response) {
-                CWS.setToken(response.token);
-                this.login.classList.add("hidden");
-                this.scene.start(SceneNames.Game);
+        this.btnLogin.onclick = this.requestLogin.bind(this);
 
-                setTimeout(() => {
-                    console.log("Logout");
-                    API.logout(response.token);
-                }, 5000);
-            }
-        };
+        this.messageHandlers[WSServerMessageTypes.Connected] = this.connectedToServer.bind(this);
+    }
+
+    private async requestLogin() {
+        const response = await API.login(this.inputUsername.value, this.inputPassword.value);
+        if (response) {
+            CWS.connect(response.token);
+        }
+    }
+
+    private connectedToServer(message: ConnectedToServer) {
+        console.log("Connected");
+        this.login.classList.add("hidden");
+        this.scene.start(SceneNames.Game);
     }
 
     preload() {
         this.login.classList.remove("hidden");
         this.inputPassword.value = "";
+        CWS.setMessageHandler(this.messageHandlers);
         CWS.forceClose();
     }
 
