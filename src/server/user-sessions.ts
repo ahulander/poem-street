@@ -2,6 +2,7 @@ import * as WebSocket from 'ws';
 
 export interface WebSocket2 extends WebSocket {
     userToken: string;
+    sequenceId: number;
 }
 
 export interface Map<TType> {

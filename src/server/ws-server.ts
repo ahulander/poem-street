@@ -27,22 +27,32 @@ messageHandlers[WSClientMessageTypes.Connecting] = connecting;
     Helper functions
 */
 
-function validateMessage(message: BaseClientMessage) {
+function validateMessage(message: BaseClientMessage, socket: WebSocket2) {
     const session = getUserSession(message.token);
-    return message && message.token && session && messageHandlers[message.type];
+    return message
+        && message.token
+        && session
+        && (!session.socket || session.socket.sequenceId === socket.sequenceId)
+        && messageHandlers[message.type];
 }
 
-function extractReason(message) {
+function extractReason(message, socket: WebSocket2) {
+    
     if (!message) {
         return "No message!";
     }
-    if (!message.token) {
+    else if (!message.token) {
         return "No token received!";
     }
-    if (!getUserSession(message.token)) {
+
+    const session = getUserSession(message.token);
+    if (!session) {
         return "No user session!";
     }
-    if (!messageHandlers[message.type]) {
+    else if (session.socket && session.socket.sequenceId !== socket.sequenceId) {
+        return "Valid token received from different web socket. Token might have been compromised!";
+    }
+    else if (!messageHandlers[message.type]) {
         return `No message handler available for: ${WSClientMessageTypes[message.type]}(${message.type})`;
     }
     return `Unknown error when validating incomming message: "${message}"`;
@@ -74,10 +84,13 @@ function handleMessage(message: BaseClientMessage) {
     messageHandlers[message.type](message);
 }
 
+let nextWebSocketSequenceId = 0;
 export function createWebSocketServer(server: http.Server) {
     
     const wss = new WebSocket.Server({ server });
     wss.on('connection', (ws: WebSocket2, req) => {
+
+        ws.sequenceId = (nextWebSocketSequenceId + 1) % 10000000;
 
         //connection is up, let's add a simple simple event
         ws.on('message', (messageJson: string) => {
@@ -85,8 +98,8 @@ export function createWebSocketServer(server: http.Server) {
             console.log(messageJson);
     
             const message: BaseClientMessage = parseMessage(messageJson);
-            if (!message || !validateMessage(message)) {
-                const reason = extractReason(message);
+            if (!message || !validateMessage(message, ws)) {
+                const reason = extractReason(message, ws);
                 console.warn(`Invalid message received from a client!\n${reason}`);
                 if (hasUserSession(ws)) {
                     disconnectWebSocket(ws);
