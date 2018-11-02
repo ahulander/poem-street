@@ -1,63 +1,40 @@
 import { LoginRequest, LoginResponse, ErrorResponse, LogoutRequest } from "../../common/api/authentication";
-import * as crypto from "crypto";
-import { setUserSession, kickUserSession, getUserSession } from "../user-sessions";
 
-
-
-const users: {[username: string]: {saltedpassword: string, salt: string}} = {}
-
-function sha256(password: string, salt: string) {
-    return crypto.createHash("sha256").update(password).update(salt).digest("base64");
-}
+import { setUserSession, kickUserSession, getUserSession } from "../user/user-sessions";
+import Users from "../user/users";
+import { errorResponse, badRequest } from "./endpoint-helper";
 
 export async function login(request: LoginRequest): Promise<LoginResponse | ErrorResponse> {
     
     if (!request || !request.username || !request.password) {
-        return {
-            statusCode: 400,
-            message: "Bad request"
-        };
+        return badRequest();
     }
 
-    if (!users[request.username]) {
-        const salt = crypto.randomBytes(64).toString("hex");
-        const saltedpassword = sha256(request.password, salt);
-        users[request.username] = {
-            salt: salt,
-            saltedpassword: saltedpassword
-        };
+    let user = Users.getByName(request.username);
+    if (!user) {
+        user = Users.createUser(request.username, request.password);
     }
-    else if(users[request.username].saltedpassword !== sha256(request.password, users[request.username].salt)) {
-        return {
-            statusCode: 401,
-            message: "Unauthorized."
-        };
+    else if (!Users.checkPassword(user, request.password)) {
+        return errorResponse(401, "Unauthorized");
     }
 
-    const token = crypto.randomBytes(24).toString("hex");
-    setUserSession(request.username, token);
+    const token = Users.generateToken();
+    setUserSession(user.name, token);
+    user.logins += 1;
 
-    return {
-        token: token
-    };
+    console.log(`${user.name}: ${user.logins}`);
+
+    return { token };
 }
 
 export async function logout(request: LogoutRequest): Promise<ErrorResponse> {
 
     if (!request || !request.token) {
-        return {
-            statusCode: 400,
-            message: "Bad request"
-        };
+        return badRequest();
     }
 
     const session = getUserSession(request.token);
     if (session) {
         kickUserSession(request.token);
     }
-    
-    return {
-        statusCode: 200,
-        message: "OK"
-    };
 }

@@ -1,9 +1,10 @@
 
 import * as http from 'http';
 import * as WebSocket from 'ws';
-import { getUserSession, WebSocket2 } from './user-sessions';
-import { parseMessage } from '../common/utility';
-import { BaseClientMessage, WSServerMessageTypes, WSClientMessageTypes } from '../common/api/ws-messages';
+import { getUserSession, WebSocket2, kickUserSession } from '../user/user-sessions';
+import { parseMessage } from '../../common/utility';
+import { BaseClientMessage, WSServerMessageTypes, WSClientMessageTypes } from '../../common/api/ws-messages';
+import Users from '../user/users';
 
 
 /*
@@ -19,7 +20,10 @@ type FuncMessageHandler = (message: any) => void;
 function connecting(message: BaseClientMessage) {
     console.log(`Connected: ${message.token}`);
     const session = getUserSession(message.token);
-    session.socket.send(JSON.stringify({ type: WSServerMessageTypes.Connected }));
+    const user = Users.getByName(session.name);
+    session.socket.send(JSON.stringify({
+        type: WSServerMessageTypes.Connected
+    }));
 }
 
 const messageHandlers: FuncMessageHandler[] = [];
@@ -115,6 +119,7 @@ export function createWebSocketServer(server: http.Server) {
         ws.on("close", () => {
             console.log("Socket closed!");
             if (hasUserSession(ws)) {
+                kickUserSession(ws.userToken);
                 disconnectWebSocket(ws);
             }
         });

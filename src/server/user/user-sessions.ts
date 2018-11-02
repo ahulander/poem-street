@@ -19,10 +19,12 @@ const userSessions: Map<UserSession> = {}
 const usernameToToken: Map<string> = {}
 
 export function kickUserSession(token: string) {
-    if (userSessions[token].socket) {
+    if (userSessions[token] && userSessions[token].socket) {
+        console.log("Kicking out previous user session!");
         userSessions[token].socket.close();
     }
     userSessions[token] = null;
+    delete userSessions[token];
 }
 
 export function getUserSession(token: string) {
@@ -40,7 +42,6 @@ export function getUserSession(token: string) {
 export function setUserSession(username: string, token: string) {
     const previousToken = usernameToToken[username];
     if (previousToken && userSessions[previousToken]) {
-        console.log("Kicking out previous user session!");
         kickUserSession(previousToken);
     }
     

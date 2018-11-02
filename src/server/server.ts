@@ -7,8 +7,8 @@
 import * as express from "express";
 import * as http from 'http';
 import * as bodyParse from "body-parser";
-import { setupEndpoints } from "./endpoints";
-import { createWebSocketServer } from "./ws-server";
+import { setupEndpoints } from "./endpoints/endpoints";
+import { createWebSocketServer } from "./network/ws-server";
 
 const app = express();
 
