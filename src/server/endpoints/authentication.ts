@@ -1,6 +1,6 @@
-import { LoginRequest, LoginResponse, ErrorResponse } from "../../common/api/authentication";
+import { LoginRequest, LoginResponse, ErrorResponse, LogoutRequest } from "../../common/api/authentication";
 import * as crypto from "crypto";
-import { setUserSession } from "../user-sessions";
+import { setUserSession, kickUserSession, getUserSession } from "../user-sessions";
 
 
 
@@ -12,6 +12,13 @@ function sha256(password: string, salt: string) {
 
 export async function login(request: LoginRequest): Promise<LoginResponse | ErrorResponse> {
     
+    if (!request || !request.username || !request.password) {
+        return {
+            statusCode: 400,
+            message: "Bad request"
+        };
+    }
+
     if (!users[request.username]) {
         const salt = crypto.randomBytes(64).toString("hex");
         const saltedpassword = sha256(request.password, salt);
@@ -22,7 +29,7 @@ export async function login(request: LoginRequest): Promise<LoginResponse | Erro
     }
     else if(users[request.username].saltedpassword !== sha256(request.password, users[request.username].salt)) {
         return {
-            error: 401,
+            statusCode: 401,
             message: "Unauthorized."
         };
     }
@@ -32,5 +39,25 @@ export async function login(request: LoginRequest): Promise<LoginResponse | Erro
 
     return {
         token: token
+    };
+}
+
+export async function logout(request: LogoutRequest): Promise<ErrorResponse> {
+
+    if (!request || !request.token) {
+        return {
+            statusCode: 400,
+            message: "Bad request"
+        };
+    }
+
+    const session = getUserSession(request.token);
+    if (session) {
+        kickUserSession(request.token);
+    }
+    
+    return {
+        statusCode: 200,
+        message: "OK"
     };
 }

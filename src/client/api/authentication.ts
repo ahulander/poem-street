@@ -1,4 +1,4 @@
-import { LoginRequest, LoginResponse, ErrorResponse } from "../../common/api/authentication";
+import { LoginRequest, LoginResponse, ErrorResponse, Endpoints, LogoutRequest } from "../../common/api/authentication";
 
 async function post<TRequest, TResponse>(url: string, data?: TRequest): Promise<TResponse> {
     
@@ -28,8 +28,9 @@ async function post<TRequest, TResponse>(url: string, data?: TRequest): Promise<
 }
 
 export async function login(username: string, password: string) {
-    return post<LoginRequest, LoginResponse>("/login", {
-        username: username,
-        password: password
-    });
+    return post<LoginRequest, LoginResponse>(Endpoints.login, { username, password });
+}
+
+export async function logout(token: string) {
+    return post<LogoutRequest, ErrorResponse>(Endpoints.logout, { token });
 }

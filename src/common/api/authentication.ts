@@ -1,6 +1,6 @@
 
 export interface ErrorResponse {
-    error: number;
+    statusCode: number;
     message: string;
 }
 
@@ -9,7 +9,15 @@ export interface LoginRequest {
     password: string;
 }
 
+export interface LogoutRequest {
+    token: string;
+}
+
 export interface LoginResponse {
     token: string;
 }
 
+export enum Endpoints {
+    login = "/login",
+    logout = "/logout"
+}

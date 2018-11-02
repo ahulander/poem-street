@@ -1,5 +1,5 @@
 import * as Phaser from "phaser";
-import { login } from "../api/authentication";
+import { login, logout } from "../api/authentication";
 import { setSocketToken, setSocketMessageHandler, FuncMessageHandler, forceCloseClientSocket } from "../api/ws-client";
 import { WSServerMessageTypes } from "../../common/api/ws-messages";
 
@@ -29,6 +29,11 @@ export class SceneMenu extends Phaser.Scene {
                 setSocketToken(response.token);
                 this.login.classList.add("hidden");
                 this.scene.start(SceneNames.Game);
+
+                setTimeout(() => {
+                    console.log("Logout");
+                    logout(response.token);
+                }, 5000);
             }
         };
     }

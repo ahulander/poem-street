@@ -28,9 +28,9 @@ messageHandlers[WSClientMessageTypes.Connecting] = connecting;
 */
 
 function validateMessage(message: BaseClientMessage, socket: WebSocket2) {
+
     const session = getUserSession(message.token);
-    return message
-        && message.token
+    return message.token
         && session
         && (!session.socket || session.socket.sequenceId === socket.sequenceId)
         && messageHandlers[message.type];

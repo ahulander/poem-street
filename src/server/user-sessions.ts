@@ -18,7 +18,7 @@ export interface UserSession {
 const userSessions: Map<UserSession> = {}
 const usernameToToken: Map<string> = {}
 
-function kickUserSession(token: string) {
+export function kickUserSession(token: string) {
     if (userSessions[token].socket) {
         userSessions[token].socket.close();
     }
