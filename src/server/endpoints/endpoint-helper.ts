@@ -1,6 +1,10 @@
 import * as express from "express";
 import { ErrorResponse } from "../../common/api/authentication";
 
+function isErrorResponse(response: any): response is ErrorResponse {
+    return response.statusCode !== undefined;
+}
+
 export function badRequest() {
     return errorResponse(400, "Bad Request");
 }
@@ -20,8 +24,8 @@ export function registerPost(
             let result = await callback(request.body);
             result = result ? result : errorResponse(200, "OK");
 
-            if (result.error !== undefined) {
-                response.status(result.error);
+            if (isErrorResponse(result)) {
+                response.status(result.statusCode);
             }
             response.json(result);
             response.end();

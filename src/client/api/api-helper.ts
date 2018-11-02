@@ -2,7 +2,7 @@
 export async function post<TRequest, TResponse>(url: string, data?: TRequest): Promise<TResponse> {
     
     function validResponse(r: any) {
-        return r.error === undefined;
+        return r.statusCode === undefined;
     }
 
     const body = data !== undefined ? JSON.stringify(data) : undefined;

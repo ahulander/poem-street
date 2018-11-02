@@ -20,6 +20,9 @@ export class SceneMenu extends Phaser.Scene {
         this.inputUsername = <HTMLInputElement>document.getElementById("input_username");
         this.inputPassword = <HTMLInputElement>document.getElementById("input_password");
 
+        this.login.onsubmit = (event) => {
+            event.preventDefault();
+        }
         this.btnLogin.onclick = this.requestLogin.bind(this);
 
         this.messageHandlers[WSServerMessageTypes.Connected] = this.connectedToServer.bind(this);
