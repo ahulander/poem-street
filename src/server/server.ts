@@ -9,7 +9,6 @@ import * as http from 'http';
 import * as bodyParse from "body-parser";
 import { setupEndpoints } from "./endpoints";
 import { createWebSocketServer } from "./ws-server";
-import { WSServerMessageTypes } from "../common/api/ws-messages";
 
 const app = express();
 
@@ -23,17 +22,7 @@ const server = http.createServer(app);
 
 const wss = createWebSocketServer(server);
 
-setInterval(() => {
-    wss.clients.forEach(client => {
-        // client.send(JSON.stringify({type: WSServerMessageTypes.Disconnected}));
-    })
-}, 1000);
-
 //start our server
 server.listen(8080, () => {
     console.log(`Server started :)`);
 });
-
-
-
-

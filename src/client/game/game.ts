@@ -1,4 +1,6 @@
-import { SceneMenu, SceneGame } from "./scenes";
+import * as Phaser from "phaser";
+import { SceneMenu } from "./scene-menu";
+import { SceneGame } from "./scene-game";
 
 export function setupGame() {
     const config = {

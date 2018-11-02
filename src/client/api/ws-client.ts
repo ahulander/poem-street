@@ -53,7 +53,7 @@ function getClientSocket() {
     return _internalClient;
 }
 
-export function forceCloseClientSocket() {
+function forceClose() {
     if (!_internalClient) {
         return;
     }
@@ -62,7 +62,7 @@ export function forceCloseClientSocket() {
     _internalClient = null;
 }
 
-export function setSocketMessageHandler(messageHandlers: FuncMessageHandler[]) {
+function setMessageHandler(messageHandlers: FuncMessageHandler[]) {
     const client = getClientSocket();
 
     if (!client) {
@@ -73,7 +73,7 @@ export function setSocketMessageHandler(messageHandlers: FuncMessageHandler[]) {
     client.messageHandlers = messageHandlers;
 }
 
-export function setSocketToken(token: string) {
+function setToken(token: string) {
     const client = getClientSocket();
 
     if (!client) {
@@ -84,7 +84,7 @@ export function setSocketToken(token: string) {
     client.token = token;
 }
 
-export function sendMessage(message: BaseClientMessage) {
+function sendMessage(message: BaseClientMessage) {
     const client = getClientSocket();
 
     if (!client) {
@@ -96,3 +96,11 @@ export function sendMessage(message: BaseClientMessage) {
     client.send(JSON.stringify(message));
 }
 
+const CWS = {
+    sendMessage,
+    setToken,
+    setMessageHandler,
+    forceClose
+};
+
+export default CWS;
