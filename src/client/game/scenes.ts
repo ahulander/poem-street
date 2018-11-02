@@ -13,6 +13,7 @@ export class SceneMenu extends Phaser.Scene {
     private login: HTMLElement;
     private btnLogin: HTMLButtonElement;
     private inputUsername: HTMLInputElement;
+    private inputPassword: HTMLInputElement;
 
     constructor() {
         super({key: SceneNames.Menu});
@@ -20,9 +21,10 @@ export class SceneMenu extends Phaser.Scene {
         this.login = document.getElementById("login");
         this.btnLogin = <HTMLButtonElement>document.getElementById("btn_login");
         this.inputUsername = <HTMLInputElement>document.getElementById("input_username");
+        this.inputPassword = <HTMLInputElement>document.getElementById("input_password");
 
         this.btnLogin.onclick = async () => {
-            const response = await login(this.inputUsername.value);
+            const response = await login(this.inputUsername.value, this.inputPassword.value);
             if (response) {
                 setSocketToken(response.token);
                 this.login.classList.add("hidden");

@@ -27,8 +27,9 @@ async function post<TRequest, TResponse>(url: string, data?: TRequest): Promise<
     return result;
 }
 
-export async function login(username: string) {
+export async function login(username: string, password: string) {
     return post<LoginRequest, LoginResponse>("/login", {
-        username: username
+        username: username,
+        password: password
     });
 }
