@@ -1,7 +1,7 @@
 import { SceneNames } from "./scene-utility";
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import * as API from "../../api";
-import { WSServerMessageTypes, ConnectedToServer } from "../../../common/api/ws-messages";
+import { WSServerMessageTypes, SMConnectedToServer } from "../../../common/api/ws-messages";
 
 export class SceneMenu extends Phaser.Scene {
     
@@ -40,7 +40,7 @@ export class SceneMenu extends Phaser.Scene {
         }
     }
 
-    private connectedToServer(message: ConnectedToServer) {
+    private connectedToServer(message: SMConnectedToServer) {
         console.log("Connected");
         this.login.classList.add("hidden");
         this.scene.start(SceneNames.Game);

@@ -12,7 +12,7 @@ export class EventQueue {
         this.typeToName = typeToName;
     }
 
-    queue(event) {
+    queue<TEvent>(event: TEvent) {
         this.events.push(event);
     }
 

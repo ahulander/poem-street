@@ -3,43 +3,23 @@ import * as http from 'http';
 import * as WebSocket from 'ws';
 import { getUserSession, WebSocket2, kickUserSession } from '../user/user-sessions';
 import { parseMessage } from '../../common/utility';
-import { BaseClientMessage, WSServerMessageTypes, WSClientMessageTypes } from '../../common/api/ws-messages';
-import Users from '../user/users';
+import { ClientMessage, WSServerMessageTypes, WSClientMessageTypes } from '../../common/api/ws-messages';
 
-
-/*
-    Message handlers
-    NOTE: Only the token and message type have been validated when the message handlers is called.
-        any additional data needs to validated first!
-
-    TODO (Alex): Should probably move each handler to its own file.
-*/
-
-type FuncMessageHandler = (message: any) => void;
-
-function connecting(message: BaseClientMessage) {
-    console.log(`Connected: ${message.token}`);
-    const session = getUserSession(message.token);
-    const user = Users.getByName(session.name);
-    session.socket.send(JSON.stringify({
-        type: WSServerMessageTypes.Connected
-    }));
-}
-
-const messageHandlers: FuncMessageHandler[] = [];
-messageHandlers[WSClientMessageTypes.Connecting] = connecting;
+export type FuncMessageHandler = (message: any) => void;
 
 /*
     Helper functions
 */
 
-function validateMessage(message: BaseClientMessage, socket: WebSocket2) {
+
+
+function validateMessage(message: ClientMessage, socket: WebSocket2) {
 
     const session = getUserSession(message.token);
     return message.token
         && session
         && (!session.socket || session.socket.sequenceId === socket.sequenceId)
-        && messageHandlers[message.type];
+        && _messageHandlers[message.type];
 }
 
 function extractReason(message, socket: WebSocket2) {
@@ -58,7 +38,7 @@ function extractReason(message, socket: WebSocket2) {
     else if (session.socket && session.socket.sequenceId !== socket.sequenceId) {
         return "Valid token received from different web socket. Token might have been compromised!";
     }
-    else if (!messageHandlers[message.type]) {
+    else if (!_messageHandlers[message.type]) {
         return `No message handler available for: ${WSClientMessageTypes[message.type]}(${message.type})`;
     }
     return `Unknown error when validating incomming message: "${message}"`;
@@ -85,8 +65,13 @@ function connectWebSocket(ws: WebSocket2, token: string) {
     session.socket = ws;
 }
 
-function handleMessage(message: BaseClientMessage) {
-    messageHandlers[message.type](message);
+function handleMessage(message: ClientMessage) {
+    _messageHandlers[message.type](message);
+}
+
+let _messageHandlers: FuncMessageHandler[];
+export function setMessageHandlers(messageHandlers: FuncMessageHandler[]) {
+    return _messageHandlers = messageHandlers;
 }
 
 let nextWebSocketSequenceId = 0;
@@ -99,7 +84,7 @@ export function createWebSocketServer(server: http.Server) {
 
         //connection is up, let's add a simple simple event
         ws.on('message', (messageJson: string) => {
-            const message: BaseClientMessage = parseMessage(messageJson);
+            const message: ClientMessage = parseMessage(messageJson);
             if (!message || !validateMessage(message, ws)) {
                 const reason = extractReason(message, ws);
                 console.warn(`Invalid message received from a client!\n${reason}`);

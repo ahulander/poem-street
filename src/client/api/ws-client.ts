@@ -1,7 +1,7 @@
 import { parseMessage } from "../../common/utility";
-import { BaseServerMessage, WSClientMessageTypes, BaseClientMessage, WSServerMessageTypes } from "../../common/api/ws-messages";
+import { ServerMessage, WSClientMessageTypes, ClientMessage, WSServerMessageTypes } from "../../common/api/ws-messages";
 
-export type FuncMessageHandler = (message: BaseServerMessage) => void;
+export type FuncMessageHandler = (message: ServerMessage) => void;
 
 export interface ClientWebSocket extends WebSocket {
     token: string;
@@ -10,11 +10,11 @@ export interface ClientWebSocket extends WebSocket {
 let _internalClient: ClientWebSocket = null;
 let _internalMessageHandlers: FuncMessageHandler[] = null;
 
-function validateMessage(ws: ClientWebSocket, message: BaseServerMessage) {
+function validateMessage(ws: ClientWebSocket, message: ServerMessage) {
     return message && ws && _internalMessageHandlers && _internalMessageHandlers[message.type];
 }
 
-function handleMessage(message: BaseServerMessage) {
+function handleMessage(message: ServerMessage) {
     if (validateMessage(_internalClient, message)) {
         _internalMessageHandlers[message.type](message);
     }
@@ -26,7 +26,7 @@ function setupClient(token: string) {
 
     // Listen for messages
     socket.addEventListener('message', function (event) {
-        const message: BaseServerMessage = parseMessage(event.data);
+        const message: ServerMessage = parseMessage(event.data);
         handleMessage(message);
     });
 
@@ -38,7 +38,7 @@ function setupClient(token: string) {
 
     socket.addEventListener("close", event => {
         console.log("Socket closed!");
-        const message: BaseServerMessage = { type: WSServerMessageTypes.Disconnected };
+        const message: ServerMessage = { type: WSServerMessageTypes.Disconnected };
         handleMessage(message);
         _internalClient = null;
     });
@@ -72,7 +72,7 @@ function connect(token: string) {
     }
 }
 
-function sendMessage(message: BaseClientMessage) {
+function sendMessage(message: ClientMessage) {
     if (!_internalClient) {
         console.warn("Failed to send ws message! No client socket open");
         return;

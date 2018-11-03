@@ -11,7 +11,7 @@ export function setupGame() {
         type: Phaser.WEBGL,
         parent: "content",
         backgroundColor: "#c1c1c1",
-        scene: [ SceneEntityTest, SceneMenu, SceneGame ]
+        scene: [ SceneMenu, SceneGame, SceneEntityTest ]
     };
 
     const result = new Game(config);

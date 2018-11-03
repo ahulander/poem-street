@@ -1,13 +1,12 @@
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { SceneNames } from "./scene-utility";
-import { WSServerMessageTypes } from "../../../common/api/ws-messages";
+import { WSServerMessageTypes, CMCreateUnit, WSClientMessageTypes } from "../../../common/api/ws-messages";
 import * as API from "../../api";
 
 export class SceneGame extends Phaser.Scene {
     
     private messageHandlers: FuncMessageHandler[] = [];
-    private clicks = 0;
-
+    
     constructor() {
         super({key: SceneNames.Game});
 
@@ -32,8 +31,12 @@ export class SceneGame extends Phaser.Scene {
             if (pointer.buttons === 4) {
                 API.logout();
             }
-
-            this.clicks += 1;
+            CWS.sendMessage(<CMCreateUnit>{
+                type: WSClientMessageTypes.CreateUnit,
+                unitType: 0,
+                x: pointer.worldX,
+                y: pointer.worldY
+            });            
         }, this);
     }
 
