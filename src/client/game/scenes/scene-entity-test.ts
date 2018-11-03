@@ -1,4 +1,20 @@
 import { SpritePool } from "../rendering/sprite-pool";
+import { EventQueue } from "../../../common/event-queue";
+
+enum GameEventType {
+    CreateHuman = 0,
+    CreateDog
+}
+
+interface GameEvent {
+    type: GameEventType;
+}
+
+interface CreateEvent extends GameEvent {
+    pos: vec2;
+}
+
+type FuncEventHandler = (event: GameEvent) => void;
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -95,11 +111,19 @@ export class SceneEntityTest extends Phaser.Scene {
     
     private sprites: SpritePool;
     private entities: Entity[] = [];
+    private eventQueue: EventQueue;
 
     constructor() {
         super({key: "test"});
 
+        this.createEntity = this.createEntity.bind(this);
+
+        const eventHandlers: FuncEventHandler[] = [];
+        eventHandlers[GameEventType.CreateDog] = this.createEntity;
+        eventHandlers[GameEventType.CreateHuman] = this.createEntity;
+
         this.sprites = new SpritePool(this);
+        this.eventQueue = new EventQueue(eventHandlers, type => GameEventType[type]);
     }
 
     preload() {
@@ -107,20 +131,25 @@ export class SceneEntityTest extends Phaser.Scene {
     }
 
     create() {
-        this.input.on("pointerdown", this.createEntity.bind(this), this);
+        this.input.on("pointerdown", (event) => {
+            this.eventQueue.queue({
+                type: (Date.now() % 2 === 0) ? GameEventType.CreateDog : GameEventType.CreateHuman,
+                pos: {
+                    x: event.worldX,
+                    y: event.worldY
+                }
+            });
+        }, this);
     }
 
-    private createEntity(event) {
+    private createEntity(event: CreateEvent) {
 
-        const type = getRandomInt(0, 2);
+        const type = event.type === GameEventType.CreateDog ? EntityType.Dog : EntityType.Human;
 
         this.entities.push({
             hp: getRandomInt(1, 10) * 100,
             type: type,
-            pos: {
-                x: event.worldX,
-                y: event.worldY
-            },
+            pos: event.pos,
             vel: {
                 x: 0,
                 y: 0
@@ -136,12 +165,13 @@ export class SceneEntityTest extends Phaser.Scene {
         const dt = (now - this.lastFrame) / 1000.0;
         this.lastFrame = now;
         
+        this.eventQueue.process();
+
         // Update entities
         for (let i = 0; i < this.entities.length; ++i) {
             updateEntity(this.entities[i], dt, this.input);
         }
 
-        const previousEntityCount = this.entities.length;
         for (let i = this.entities.length - 1; i >= 0; --i) {
             if (entityIsDead(this.entities[i])) {
                 this.entities.splice(i, 1);
@@ -149,8 +179,7 @@ export class SceneEntityTest extends Phaser.Scene {
         }
 
         // Draw entities
-        const flushCount = previousEntityCount - this.entities.length;
-        this.sprites.clear(flushCount);
+        this.sprites.clear();
         for (let i = 0; i < this.entities.length; ++i) {
             entityDraw(this.sprites.get(), this.entities[i]);
         }

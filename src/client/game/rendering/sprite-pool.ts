@@ -26,8 +26,7 @@ export class SpritePool {
         return result;
     }
 
-    clear(flushCount: number) {
-        const last = this.pool.length - 1;
+    clear() {
         for (let i = 0; i < this.pool.length; ++i) {
             const sprite = this.pool[i];
             sprite.setActive(false);

@@ -19,7 +19,7 @@ export async function login(request: LoginRequest): Promise<LoginResponse | Erro
     }
 
     const token = Users.generateToken();
-    setUserSession(user.name, token);
+    setUserSession(user.id, user.name, token);
     user.logins += 1;
 
     console.log(`${user.name}: ${user.logins}`);

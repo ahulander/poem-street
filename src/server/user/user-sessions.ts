@@ -11,6 +11,7 @@ export interface Map<TType> {
 
 export interface UserSession {
     name: string;
+    id: number;
     socket: WebSocket2;
     expires: number;
 }
@@ -39,7 +40,7 @@ export function getUserSession(token: string) {
     return result;
 }
 
-export function setUserSession(username: string, token: string) {
+export function setUserSession(userId: number, username: string, token: string) {
     const previousToken = usernameToToken[username];
     if (previousToken && userSessions[previousToken]) {
         kickUserSession(previousToken);
@@ -48,6 +49,7 @@ export function setUserSession(username: string, token: string) {
     const expiresIn = 12 * 60 * 60 * 1000;
     userSessions[token] = {
         name: username,
+        id: userId,
         socket: null,
         expires: Date.now() + expiresIn
     };
