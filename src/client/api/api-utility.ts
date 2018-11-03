@@ -1,8 +1,19 @@
 
+let _token: string = null;
+
+export function setToken(token: string) {
+    _token = token;
+}
+
 export async function post<TRequest, TResponse>(url: string, data?: TRequest): Promise<TResponse> {
     
     function validResponse(r: any) {
         return r.statusCode === undefined;
+    }
+
+    if (_token) {
+        data = data || <any>{};
+        (<any>data).token = _token;
     }
 
     const body = data !== undefined ? JSON.stringify(data) : undefined;

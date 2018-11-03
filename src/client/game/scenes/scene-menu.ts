@@ -1,7 +1,7 @@
 import { SceneNames } from "./scene-utility";
-import CWS, { FuncMessageHandler } from "../api/ws-client";
-import * as API from "../api";
-import { WSClientMessageTypes, WSServerMessageTypes, ConnectedToServer } from "../../common/api/ws-messages";
+import CWS, { FuncMessageHandler } from "../../api/ws-client";
+import * as API from "../../api";
+import { WSServerMessageTypes, ConnectedToServer } from "../../../common/api/ws-messages";
 
 export class SceneMenu extends Phaser.Scene {
     
@@ -31,7 +31,12 @@ export class SceneMenu extends Phaser.Scene {
     private async requestLogin() {
         const response = await API.login(this.inputUsername.value, this.inputPassword.value);
         if (response) {
+            API.setToken(response.token);
             CWS.connect(response.token);
+        }
+        else {
+            this.inputPassword.value = "";
+            this.inputPassword.focus();
         }
     }
 
@@ -44,6 +49,7 @@ export class SceneMenu extends Phaser.Scene {
     preload() {
         this.login.classList.remove("hidden");
         this.inputPassword.value = "";
+        this.inputUsername.focus();
         CWS.setMessageHandler(this.messageHandlers);
         CWS.forceClose();
     }

@@ -1,16 +1,19 @@
 import * as Phaser from "phaser";
-import { SceneMenu } from "./scene-menu";
-import { SceneGame } from "./scene-game";
+import { SceneMenu } from "./scenes/scene-menu";
+import { SceneGame } from "./scenes/scene-game";
+import { SceneEntityTest } from "./scenes/scene-entity-test";
+import { Game } from "phaser";
 
 export function setupGame() {
-    const config = {
+    const config: GameConfig = {
         width: 800,
         height: 600,
         type: Phaser.WEBGL,
         parent: "content",
-        scene: [ SceneMenu, SceneGame ]
+        backgroundColor: "#c1c1c1",
+        scene: [ SceneEntityTest, SceneMenu, SceneGame ]
     };
 
-    const result = new Phaser.Game(config);
+    const result = new Game(config);
     return result;
 }
