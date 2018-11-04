@@ -22,7 +22,7 @@ setupEndpoints(app);
 const server = http.createServer(app);
 
 const wss = createWebSocketServer(server);
-const game = new Game();
+const game = new Game(wss);
 game.run();
 
 //start our server

@@ -1,5 +1,6 @@
 import { SpritePool } from "../rendering/sprite-pool";
 import { EventQueue } from "../../../common/event-queue";
+import { vec2 } from "../../../common/math/vector2";
 
 enum GameEventType {
     CreateHuman = 0,
@@ -48,40 +49,6 @@ entityStats[EntityType.Dog] = {
     speed: 30,
     energyConsumption: 2
 };
-
-interface vec2 {
-    x: number;
-    y: number;
-}
-
-namespace vec2 {
-    export function normalize(v: vec2) {
-        const length = Math.sqrt(v.x * v.x + v.y * v.y);
-        const inv = 1.0 /  (length > 0.0000001 ? length : 0.0000001);
-        return { x: v.x *= inv, y: v.y *= inv };
-    }
-
-    export function sub(a: vec2, b: vec2) {
-        return {
-            x: a.x - b.x,
-            y: a.y - b.y
-        };
-    }
-
-    export function add(a: vec2, b: vec2) {
-        return {
-            x: a.x + b.x,
-            y: a.y + b.y
-        };
-    }
-
-    export function scale(v: vec2, s: number) {
-        return {
-            x: v.x * s,
-            y: v.y * s
-        };
-    }
-}
 
 function updateEntity(entity: Entity, dt: number, input) {
     const speed = entityStats[entity.type].speed;
