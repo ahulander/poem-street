@@ -2,7 +2,7 @@ import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { SceneNames } from "./scene-utility";
 import { WSServerMessageTypes, CMCreateUnit, WSClientMessageTypes, SMUnit, CMMoveUnit } from "../../../common/api/ws-messages";
 import * as API from "../../api";
-import { UnitData, tick } from "../../../common/entities/unit";
+import { UnitData, tick, UnitType } from "../../../common/entities/unit";
 import { SpritePool } from "../rendering/sprite-pool";
 
 export class SceneGame extends Phaser.Scene {
@@ -44,6 +44,7 @@ export class SceneGame extends Phaser.Scene {
     preload() {
         CWS.setMessageHandler(this.messageHandlers);
         this.load.image("test", "assets/test.png");
+        this.sprites.reset();
     }
 
     create() {
@@ -66,7 +67,7 @@ export class SceneGame extends Phaser.Scene {
             else {
                 CWS.sendMessage(<CMCreateUnit>{
                     type: WSClientMessageTypes.CreateUnit,
-                    unitType: 0,
+                    unitType: Math.random() > 0.5 ? UnitType.Human : UnitType.Dog,
                     x: pointer.worldX,
                     y: pointer.worldY
                 });
@@ -98,5 +99,6 @@ export class SceneGame extends Phaser.Scene {
         for (let i = 0; i < this.units.length; ++i) {
             this.drawUnit(this.units[i]);
         }
+        this.sprites.flush();
     }
 }

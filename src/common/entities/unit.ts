@@ -15,7 +15,7 @@ export interface UnitData {
 }
 
 export interface UnitStats {
-    speed: number;
+    readonly speed: number;
 }
 
 const unitStats: UnitStats[] = [];

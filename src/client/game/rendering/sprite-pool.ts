@@ -26,12 +26,19 @@ export class SpritePool {
         return result;
     }
 
+    reset() {
+        this.pool.splice(0, this.pool.length);
+    }
+
     clear() {
-        for (let i = 0; i < this.pool.length; ++i) {
+        this.count = 0;
+    }
+
+    flush() {
+        for (let i = this.count; i < this.pool.length; ++i) {
             const sprite = this.pool[i];
             sprite.setActive(false);
             sprite.setVisible(false);
         }
-        this.count = 0;
     }
 }

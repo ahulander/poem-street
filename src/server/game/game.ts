@@ -109,11 +109,13 @@ export class Game {
         for (let i = 0; i < unitCount; ++i) {
             const unit = this.units[i];
             this.wss.clients.forEach(ws => {
-                ws.send(JSON.stringify({
-                    type: WSServerMessageTypes.Unit,
-                    unit: unit
-                }));
-            })
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: WSServerMessageTypes.Unit,
+                        unit: unit
+                    }));
+                }
+            });
         }
     }
 }

@@ -24,7 +24,7 @@ function createUnit(eventQueue: EventQueue, message: CMCreateUnit) {
     eventQueue.queue<EventCreateUnit>({
         type: EventTypes.CreateUnit,
         userId: session.userId,
-        unitType: message.type,
+        unitType: message.unitType,
         x: message.x,
         y: message.y
     });
