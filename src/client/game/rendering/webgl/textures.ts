@@ -2,7 +2,8 @@ import { getContext } from "./context";
 
 export enum TextureNames {
     Tiles = 0,
-    RedTiles
+    RedTiles,
+    Test
 }
 
 export interface AssetImage {
@@ -17,9 +18,10 @@ export function getTexture(name) {
     return _textures[name];
 }
 
-export function loadTextures() {
+export function loadTextureAssets() {
     load(TextureNames.Tiles, "/assets/tiles.png");
     load(TextureNames.RedTiles, "/assets/tiles_red.png");
+    load(TextureNames.Test, "assets/test.png");
 }
 
 function load(name: TextureNames, url: string) {

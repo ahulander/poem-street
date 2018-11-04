@@ -25,11 +25,7 @@ export class InputManager {
         target.onmousedown = this.onMouseDown.bind(this);
         target.onmouseup = this.onMouseUp.bind(this);
     }
-
-    update() {
-        
-    }
-
+    
     getMouseState() {
         return this.mouseState;
     }
@@ -46,8 +42,9 @@ export class InputManager {
 
     private onMouseMove(event: MouseEvent) {
         
-        const x = event.clientX;
-        const y = event.clientY;
+        const rect = (<any>event.target).getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
 
         this.mouseState.screenX = x;
         this.mouseState.screenY = y;

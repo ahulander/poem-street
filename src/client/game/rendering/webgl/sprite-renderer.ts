@@ -109,7 +109,7 @@ export class SpriteRenderer {
 
     flush() {
 
-        if (!this.texture) {
+        if (!this.texture || this.vertexCount <= 0) {
             return;
         }
 

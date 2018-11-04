@@ -10,9 +10,6 @@ import { initAlt } from "./game/rendering/alt_mode";
 
 async function initGame() {
     const game = setupGame();
-    
-    // TODO (Alex): Disable this in a production build
-    setupSceneSelector(game);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

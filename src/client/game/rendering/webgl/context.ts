@@ -1,8 +1,7 @@
 
 let gl: WebGLRenderingContext;
 
-export function setupContex() {
-    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+export function setupContex(canvas: HTMLCanvasElement) {
     gl = canvas.getContext("webgl");
     if (!gl) {
         console.error("WebGL not supported");

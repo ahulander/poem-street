@@ -1,10 +1,11 @@
+import * as API from "../../api";
+import { Scene } from "./scene-manager";
 import { SceneNames } from "./scene-utility";
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
-import * as API from "../../api";
-import { WSServerMessageTypes, SMConnectedToServer } from "../../../common/api/ws-messages";
+import { SMConnectedToServer, WSServerMessageTypes } from "../../../common/api/ws-messages";
 
-export class SceneMenu extends Phaser.Scene {
-    
+export class SceneLogin extends Scene {
+
     private login: HTMLElement;
     private btnLogin: HTMLButtonElement;
     private inputUsername: HTMLInputElement;
@@ -13,7 +14,7 @@ export class SceneMenu extends Phaser.Scene {
     private messageHandlers: FuncMessageHandler[] = [];
 
     constructor() {
-        super({key: SceneNames.Menu});
+        super(SceneNames.Menu);
 
         this.login = document.getElementById("login");
         this.btnLogin = <HTMLButtonElement>document.getElementById("btn_login");
@@ -43,10 +44,10 @@ export class SceneMenu extends Phaser.Scene {
     private connectedToServer(message: SMConnectedToServer) {
         console.log("Connected");
         CWS.setUserId(message.userId);
-        this.scene.start(SceneNames.Game);
+        this.gotoScene(SceneNames.Game);
     }
 
-    preload() {
+    hello() {
         this.login.classList.remove("hidden");
         this.inputPassword.value = "";
         this.inputUsername.focus();
@@ -54,10 +55,7 @@ export class SceneMenu extends Phaser.Scene {
         CWS.forceClose();
     }
 
-    create() {
-        this.events.once("shutdown", () => {
-            console.log("shutdown");
-            this.login.classList.add("hidden");
-        }, this);
+    goodbye() {
+        this.login.classList.add("hidden");
     }
 }
