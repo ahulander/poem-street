@@ -1,4 +1,6 @@
 import { setupGame } from "./game/game";
+import { setupSceneSelector } from "./dev_tools/scene-selector";
+import { initAlt } from "./game/rendering/alt_mode";
 
 /*
 
@@ -8,8 +10,19 @@ import { setupGame } from "./game/game";
 
 async function initGame() {
     const game = setupGame();
+    
+    // TODO (Alex): Disable this in a production build
+    setupSceneSelector(game);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    initGame();
+    
+    const altMode = (<any>window).NO_PHASER;
+
+    if (altMode) {
+        initAlt();
+    }
+    else {
+        initGame();
+    }
 });

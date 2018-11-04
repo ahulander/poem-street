@@ -1,7 +1,7 @@
 import * as Phaser from "phaser";
 import { SceneMenu } from "./scenes/scene-menu";
 import { SceneGame } from "./scenes/scene-game";
-import { SceneEntityTest } from "./scenes/scene-entity-test";
+import { SceneSpriteTest } from "./scenes/scene-sprite-test";
 import { Game } from "phaser";
 
 export function setupGame() {
@@ -11,7 +11,7 @@ export function setupGame() {
         type: Phaser.WEBGL,
         parent: "content",
         backgroundColor: "#c1c1c1",
-        scene: [ SceneMenu, SceneGame, SceneEntityTest ]
+        scene: [ SceneMenu, SceneGame, SceneSpriteTest ]
     };
 
     const result = new Game(config);

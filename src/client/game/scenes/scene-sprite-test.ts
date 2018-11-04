@@ -1,6 +1,7 @@
 import { SpritePool } from "../rendering/sprite-pool";
 import { EventQueue } from "../../../common/event-queue";
 import { vec2 } from "../../../common/math/vector2";
+import { SceneNames } from "./scene-utility";
 
 enum GameEventType {
     CreateHuman = 0,
@@ -74,14 +75,14 @@ function entityDraw(sprite: Phaser.GameObjects.TileSprite, entity: Entity) {
     sprite.flipX = entity.vel.x < 0;
 }
 
-export class SceneEntityTest extends Phaser.Scene {
+export class SceneSpriteTest extends Phaser.Scene {
     
     private sprites: SpritePool;
     private entities: Entity[] = [];
     private eventQueue: EventQueue;
 
-    constructor() {
-        super({key: "test"});
+    constructor() {        
+        super({key: SceneNames.SpriteTest});
 
         this.createEntity = this.createEntity.bind(this);
 
@@ -95,6 +96,12 @@ export class SceneEntityTest extends Phaser.Scene {
 
     preload() {
         this.load.image("test", "assets/test.png");
+
+        Object.keys(this.game.scene.keys).forEach(key => {
+            if (this.scene.key !== key) {
+                this.scene.stop(key);
+            }
+        });
     }
 
     create() {

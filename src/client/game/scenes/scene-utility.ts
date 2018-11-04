@@ -1,5 +1,6 @@
 
 export enum SceneNames {
     Menu = "menu",
-    Game = "game"
+    Game = "game",
+    SpriteTest = "sprite-test"
 }

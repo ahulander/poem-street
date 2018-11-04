@@ -43,7 +43,6 @@ export class SceneMenu extends Phaser.Scene {
     private connectedToServer(message: SMConnectedToServer) {
         console.log("Connected");
         CWS.setUserId(message.userId);
-        this.login.classList.add("hidden");
         this.scene.start(SceneNames.Game);
     }
 
@@ -56,5 +55,9 @@ export class SceneMenu extends Phaser.Scene {
     }
 
     create() {
+        this.events.once("shutdown", () => {
+            console.log("shutdown");
+            this.login.classList.add("hidden");
+        }, this);
     }
 }
