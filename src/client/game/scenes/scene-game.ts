@@ -1,8 +1,8 @@
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { SceneNames } from "./scene-utility";
-import { WSServerMessageTypes, CMCreateUnit, WSClientMessageTypes, SMUnit } from "../../../common/api/ws-messages";
+import { WSServerMessageTypes, CMCreateUnit, WSClientMessageTypes, SMUnit, CMMoveUnit } from "../../../common/api/ws-messages";
 import * as API from "../../api";
-import { UnitData } from "../../../common/entities/unit";
+import { UnitData, tick } from "../../../common/entities/unit";
 import { SpritePool } from "../rendering/sprite-pool";
 
 export class SceneGame extends Phaser.Scene {
@@ -52,12 +52,25 @@ export class SceneGame extends Phaser.Scene {
             if (pointer.buttons === 4) {
                 API.logout();
             }
-            CWS.sendMessage(<CMCreateUnit>{
-                type: WSClientMessageTypes.CreateUnit,
-                unitType: 0,
-                x: pointer.worldX,
-                y: pointer.worldY
-            });            
+
+            const unit = this.units.find(u => u.userId === CWS.getUserId());
+            if (unit) { 
+                unit.moving = false;
+                CWS.sendMessage(<CMMoveUnit>{
+                    type: WSClientMessageTypes.MoveUnit,
+                    unitId: unit.id,
+                    x: pointer.worldX,
+                    y: pointer.worldY
+                })
+            }
+            else {
+                CWS.sendMessage(<CMCreateUnit>{
+                    type: WSClientMessageTypes.CreateUnit,
+                    unitType: 0,
+                    x: pointer.worldX,
+                    y: pointer.worldY
+                });
+            }
         }, this);
     }
 
@@ -69,7 +82,17 @@ export class SceneGame extends Phaser.Scene {
         sprite.setOrigin(0.5, 0.5);
     }
 
+    private lastFrame = 0;
+
     update() {
+
+        const now = Date.now();
+        const dt = (now - this.lastFrame) / 1000.0;
+        this.lastFrame = now;
+
+        for (let i = 0; i < this.units.length; ++i) {
+            tick(this.units[i], dt);
+        }
 
         this.sprites.clear();
         for (let i = 0; i < this.units.length; ++i) {

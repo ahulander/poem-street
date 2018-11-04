@@ -53,6 +53,7 @@ function forceClose() {
 
     _internalClient.close();
     _internalClient = null;
+    _userId = null;
 }
 
 function setMessageHandler(messageHandlers: FuncMessageHandler[]) {
@@ -82,11 +83,22 @@ function sendMessage(message: ClientMessage) {
     _internalClient.send(JSON.stringify(message));
 }
 
+let _userId: number = null;
+function setUserId(userId: number) {
+    _userId = userId;
+}
+
+function getUserId() {
+    return _userId;
+}
+
 const CWS = {
     sendMessage,
     connect,
     setMessageHandler,
-    forceClose
+    forceClose,
+    setUserId,
+    getUserId
 };
 
 export default CWS;

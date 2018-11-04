@@ -3,7 +3,8 @@ import { UnitData } from "../entities/unit";
 // Message types sent by the client to the server
 export enum WSClientMessageTypes {
     Connecting = 0,
-    CreateUnit
+    CreateUnit,
+    MoveUnit
 }
 
 export interface ClientMessage {
@@ -14,6 +15,12 @@ export interface ClientMessage {
 
 export interface CMCreateUnit  extends ClientMessage {
     unitType: number;
+    x: number;
+    y: number;
+}
+
+export interface CMMoveUnit extends ClientMessage {
+    unitId: number;
     x: number;
     y: number;
 }
@@ -31,6 +38,7 @@ export interface ServerMessage {
 
 export interface SMConnectedToServer extends ServerMessage {
     type: WSServerMessageTypes.Connected;
+    userId: number;
 }
 
 export interface SMUnit extends ServerMessage {

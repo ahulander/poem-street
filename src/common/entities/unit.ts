@@ -30,11 +30,15 @@ export function tick(unit: UnitData, deltaTime: number) {
     
     if (unit.moving) {
         const stats = unitStats[unit.type];
-        const direction = vec2.normalize(vec2.sub(unit.target, unit.position));
+        const direction = vec2.sub(unit.target, unit.position);
+        const d = vec2.normalize(direction);
+        const maxDist = vec2.magnitude(direction);
         unit.position = vec2.add(
             unit.position,
-            vec2.scale(direction, stats.speed * deltaTime)
+             vec2.scale(d, Math.min(stats.speed * deltaTime, maxDist))
         );
+
+        unit.moving = vec2.distance(unit.position, unit.target) > 1.0;
     }
 }
 

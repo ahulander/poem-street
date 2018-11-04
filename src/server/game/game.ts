@@ -1,12 +1,13 @@
 import * as WebSocket from 'ws';
 import { EventQueue } from "../../common/event-queue";
 import { setupMessageHandlers } from "./message-handlers";
-import { UnitData } from "../../common/entities/unit";
+import { UnitData, tick } from "../../common/entities/unit";
 import { vec2 } from "../../common/math/vector2";
 import { WSServerMessageTypes } from '../../common/api/ws-messages';
 
 export enum EventTypes {
-    CreateUnit = 0
+    CreateUnit = 0,
+    MoveUnit
 }
 
 export interface BaseEvent {
@@ -16,6 +17,13 @@ export interface BaseEvent {
 export interface EventCreateUnit extends BaseEvent {
     userId: number;
     unitType: number;
+    x: number;
+    y: number;
+}
+
+export interface EventMoveUnit extends BaseEvent {
+    userId: number;
+    unitId: number;
     x: number;
     y: number;
 }
@@ -40,6 +48,7 @@ export class Game {
 
         const eventHandlers: any[] = [];
         eventHandlers[EventTypes.CreateUnit] = this.createUnit.bind(this);
+        eventHandlers[EventTypes.MoveUnit] = this.moveUnit.bind(this);
         this.eventQueue = new EventQueue(eventHandlers, eventToName);
 
         setupMessageHandlers(this.eventQueue);
@@ -47,6 +56,18 @@ export class Game {
 
     run() {
         setInterval(this.tick.bind(this), 1000);
+    }
+
+    private moveUnit(event: EventMoveUnit) {
+        const unit = this.units.find(u => u.id === event.unitId && u.userId === event.userId);
+        if (unit) {
+            unit.moving = true;
+            unit.target = vec2(event.x, event.y);
+        }
+        else {
+            console.warn("Failed to move unit!");
+            console.log(event);
+        }
     }
 
     private createUnit(event: EventCreateUnit) {
@@ -70,11 +91,17 @@ export class Game {
     private tick() {
         this.eventQueue.process();
 
-        // TODO (Alex): Run simulation
+        this.simulate();
 
         // TODO (Alex): Do something cleaver here! We don't want to broadcast everything all the time!
-        this.broadcastUnits();
-        
+        this.broadcastUnits(); 
+    }
+
+    private simulate() {
+        const unitCount = this.units.length;
+        for (let i = 0; i < unitCount; ++i) {
+            tick(this.units[i], 1.0);
+        }
     }
 
     private broadcastUnits() {

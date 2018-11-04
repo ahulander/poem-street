@@ -28,4 +28,13 @@ export namespace vec2 {
     export function scale(v: vec2, s: number) {
         return vec2(v.x * s, v.y * s);
     }
+
+    export function magnitude(v: vec2) {
+        return Math.sqrt(v.x * v.x + v.y * v.y);
+    }
+
+    export function distance(a: vec2, b: vec2) {
+        const d = sub(a, b);
+        return magnitude(d);
+    }
 }
