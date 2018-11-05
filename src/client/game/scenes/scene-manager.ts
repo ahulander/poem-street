@@ -1,6 +1,7 @@
 import { SceneNames } from "./scene-utility";
 import { InputManager } from "../rendering/webgl/input";
 import { SpriteRenderer } from "../rendering/webgl/sprite-renderer";
+import { clearScreenBuffer } from "../rendering/webgl/context";
 
 var _tempSceneManager: SceneManager;
 
@@ -95,6 +96,7 @@ export class SceneManager {
                 return;
             }
 
+            this.inputManager.clearAllEventListeners();
             if (this.currentScene) {
                 this.currentScene.goodbye();
             }
@@ -105,6 +107,7 @@ export class SceneManager {
 
     update() {
         if (this.currentScene) {
+            clearScreenBuffer();
             this.currentScene.update();
         }
     }

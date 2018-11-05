@@ -4,7 +4,6 @@ import { EventQueue } from "../../../common/event-queue";
 import { Sprite } from "../rendering/webgl/sprite-renderer";
 import { TextureNames } from "../rendering/webgl/textures";
 import { vec2 } from "../../../common/math/vector2";
-import { clearScreenBuffer } from "../rendering/webgl/context";
 import { MouseState } from "../rendering/webgl/input";
 
 enum GameEventType {
@@ -149,8 +148,6 @@ export class SceneSpriteTest extends Scene {
                 this.entities.splice(i, 1);
             }
         }
-
-        clearScreenBuffer();
 
         // Draw entities
         for (let i = 0; i < this.entities.length; ++i) {

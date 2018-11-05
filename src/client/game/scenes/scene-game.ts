@@ -4,7 +4,6 @@ import { SceneNames } from "./scene-utility";
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { UnitData, tick, UnitType } from "../../../common/entities/unit";
 import { WSServerMessageTypes, SMUnit, CMMoveUnit, CMCreateUnit, WSClientMessageTypes } from "../../../common/api/ws-messages";
-import { clearScreenBuffer } from "../rendering/webgl/context";
 import { TextureNames } from "../rendering/webgl/textures";
 
 export class SceneGame extends Scene {
@@ -67,7 +66,7 @@ export class SceneGame extends Scene {
             tick(this.units[i], dt);
         }
 
-        clearScreenBuffer();
+
 
         for (let i = 0; i < this.units.length; ++i) {
             this.drawUnit(this.units[i]);

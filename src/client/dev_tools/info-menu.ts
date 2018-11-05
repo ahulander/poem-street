@@ -41,9 +41,6 @@ export function setupInfoMenu(inputManager: InputManager) {
     inputManager.registerKeyboardShortcut("F1", () => {
         if (root.classList.contains("hidden")) {
             root.classList.remove("hidden");
-        }
-        else {
-            root.classList.add("hidden");
             while (tbody.firstChild) {
                 tbody.removeChild(tbody.firstChild);
             }
@@ -61,6 +58,9 @@ export function setupInfoMenu(inputManager: InputManager) {
                 tr.appendChild(tdGlobal);
                 tbody.appendChild(tr);
             });
+        }
+        else {
+            root.classList.add("hidden");
         }
     }, "Brings up the help menu", true);
 }
