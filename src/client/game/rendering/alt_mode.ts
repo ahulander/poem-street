@@ -50,7 +50,7 @@ function seizure() {
     const renderer = new SpriteRenderer();
 
     let seziueEnabled = false;
-    inputManager.onClick = () => {
+    inputManager.onLeftClick = () => {
         seziueEnabled = !seziueEnabled;
     }
 

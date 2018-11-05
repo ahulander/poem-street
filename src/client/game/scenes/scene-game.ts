@@ -31,7 +31,7 @@ export class SceneGame extends Scene {
     hello() {
         CWS.setMessageHandler(this.messageHandlers);
 
-        this.inputManager.onClick = (mouse) => {
+        this.inputManager.onRightClick = (mouse) => {
             const unit = this.units.find(u => u.userId === CWS.getUserId());
             if (unit) { 
                 unit.moving = false;
@@ -42,7 +42,11 @@ export class SceneGame extends Scene {
                     y: mouse.worldY
                 })
             }
-            else {
+        };
+
+        this.inputManager.onLeftClick = (mouse) => {
+            const unit = this.units.find(u => u.userId === CWS.getUserId());
+            if (!unit) {
                 CWS.sendMessage(<CMCreateUnit>{
                     type: WSClientMessageTypes.CreateUnit,
                     unitType: Math.random() > 0.5 ? UnitType.Human : UnitType.Dog,

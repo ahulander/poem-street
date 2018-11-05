@@ -117,7 +117,7 @@ export class SceneSpriteTest extends Scene {
     }
 
     hello() {
-        this.inputManager.onClick = (mouse) => {
+        this.inputManager.onLeftClick = (mouse) => {
             this.eventQueue.queue({
                 type: (Date.now() % 2 === 0) ? GameEventType.CreateDog : GameEventType.CreateHuman,
                 pos: {

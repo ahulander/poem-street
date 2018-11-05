@@ -1,5 +1,6 @@
 import { SceneNames } from "../game/scenes/scene-utility";
 import { SceneManager } from "../game/scenes/scene-manager";
+import { InputManager } from "../game/rendering/webgl/input";
 
 interface SceneSelector {
     open: boolean;
@@ -49,7 +50,7 @@ function createSceneSelectorElement(sceneManager: SceneManager) {
     return root;
 }
 
-export function setupSceneSelector(sceneManager: SceneManager) {
+export function setupSceneSelector(inputManager: InputManager, sceneManager: SceneManager) {
 
     const root = createSceneSelectorElement(sceneManager);
     document.body.appendChild(root);
@@ -59,9 +60,7 @@ export function setupSceneSelector(sceneManager: SceneManager) {
         root: root
     };
 
-    window.onkeydown = (event) => {
-        if (event.keyCode === 220 && event.altKey) {
-            toggleSceneSelector(sceneSelector);
-        }
-    }
+    inputManager.registerKeyboardShortcut("Alt+§", () => {
+        toggleSceneSelector(sceneSelector);
+    }, "Toggle scene menu", true);
 }

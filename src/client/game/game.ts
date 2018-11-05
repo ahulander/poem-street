@@ -8,6 +8,7 @@ import { SceneGame } from "./scenes/scene-game";
 import { loadTextureAssets } from "./rendering/webgl/textures";
 import { SceneSpriteTest } from "./scenes/scene-sprite-test";
 import { setupSceneSelector } from "../dev_tools/scene-selector";
+import { setupInfoMenu } from "../dev_tools/info-menu";
 
 export function setupGame() {
 
@@ -39,5 +40,6 @@ export function setupGame() {
     }, 16);
 
     // Dev Tool, should probably be excluded in a production build =) 
-    setupSceneSelector(sceneManager);
+    setupSceneSelector(inputManger, sceneManager);
+    setupInfoMenu(inputManger);
 }
