@@ -1,4 +1,3 @@
-import { mat4 } from "gl-matrix";
 import { ProgramInfo, createProgram } from "./shader";
 import { getContext } from "./context";
 import { getTexture, AssetImage, TextureNames } from "./textures";

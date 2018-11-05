@@ -1,14 +1,16 @@
-import { SceneManager, Scene } from "./scenes/scene-manager";
-import { setupContex } from "./rendering/webgl/context";
-import { InputManager } from "./rendering/webgl/input";
+import { SceneManager } from "./scenes/scene-manager";
+import { setupContex } from "./rendering/context";
+import { InputManager } from "./input/input";
 import { SceneNames } from "./scenes/scene-utility";
-import { SpriteRenderer } from "./rendering/webgl/sprite-renderer";
+import { SpriteRenderer } from "./rendering/sprite-renderer";
 import { SceneLogin } from "./scenes/scene-menu";
 import { SceneGame } from "./scenes/scene-game";
-import { loadTextureAssets } from "./rendering/webgl/textures";
-import { SceneSpriteTest } from "./scenes/scene-sprite-test";
+import { loadTextureAssets } from "./rendering/textures";
+import { SceneSpriteTest } from "./scenes/test/scene-sprite-test";
 import { setupSceneSelector } from "../dev_tools/scene-selector";
 import { setupInfoMenu } from "../dev_tools/info-menu";
+import { SceneSpriteStressTest } from "./scenes/test/scene-sprite-stress-test";
+import { SceneSeizure } from "./scenes/test/scene-seizure";
 
 export function setupGame() {
 
@@ -31,7 +33,9 @@ export function setupGame() {
     sceneManager.register(
         SceneLogin,
         SceneGame,
-        SceneSpriteTest
+        SceneSpriteTest,
+        SceneSpriteStressTest,
+        SceneSeizure
     );
     sceneManager.gotoScene(SceneNames.SpriteTest);
 

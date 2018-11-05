@@ -4,7 +4,7 @@ import { SceneNames } from "./scene-utility";
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { UnitData, tick, UnitType } from "../../../common/entities/unit";
 import { WSServerMessageTypes, SMUnit, CMMoveUnit, CMCreateUnit, WSClientMessageTypes } from "../../../common/api/ws-messages";
-import { TextureNames } from "../rendering/webgl/textures";
+import { TextureNames } from "../rendering/textures";
 
 export class SceneGame extends Scene {
     

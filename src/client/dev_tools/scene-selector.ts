@@ -1,6 +1,6 @@
 import { SceneNames } from "../game/scenes/scene-utility";
 import { SceneManager } from "../game/scenes/scene-manager";
-import { InputManager } from "../game/rendering/webgl/input";
+import { InputManager } from "../game/input/input";
 
 interface SceneSelector {
     open: boolean;

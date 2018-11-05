@@ -1,7 +1,7 @@
 import { SceneNames } from "./scene-utility";
-import { InputManager } from "../rendering/webgl/input";
-import { SpriteRenderer } from "../rendering/webgl/sprite-renderer";
-import { clearScreenBuffer } from "../rendering/webgl/context";
+import { InputManager } from "../input/input";
+import { SpriteRenderer } from "../rendering/sprite-renderer";
+import { clearScreenBuffer } from "../rendering/context";
 
 var _tempSceneManager: SceneManager;
 

@@ -1,4 +1,4 @@
-import { getMainCameraMatrices } from "./camera";
+import { getMainCameraMatrices } from "../rendering/camera";
 import { mat4, vec4 } from "gl-matrix";
 
 

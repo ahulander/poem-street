@@ -1,4 +1,4 @@
-import { InputManager } from "../game/rendering/webgl/input";
+import { InputManager } from "../game/input/input";
 
 export function setupInfoMenu(inputManager: InputManager) {
     const root = document.createElement("div");
@@ -44,7 +44,7 @@ export function setupInfoMenu(inputManager: InputManager) {
             while (tbody.firstChild) {
                 tbody.removeChild(tbody.firstChild);
             }
-
+            console.log();
             inputManager.getShortcutInfo().forEach(info => {
                 const tr = document.createElement("tr");
                 const tdShortcut = document.createElement("td");
