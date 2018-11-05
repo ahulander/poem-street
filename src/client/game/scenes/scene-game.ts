@@ -1,22 +1,20 @@
-import CWS, { FuncMessageHandler } from "../../api/ws-client";
-import { SceneNames } from "./scene-utility";
-import { WSServerMessageTypes, CMCreateUnit, WSClientMessageTypes, SMUnit, CMMoveUnit } from "../../../common/api/ws-messages";
 import * as API from "../../api";
+import { Scene } from "./scene-manager";
+import { SceneNames } from "./scene-utility";
+import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { UnitData, tick, UnitType } from "../../../common/entities/unit";
-import { SpritePool } from "../rendering/sprite-pool";
+import { WSServerMessageTypes, SMUnit, CMMoveUnit, CMCreateUnit, WSClientMessageTypes } from "../../../common/api/ws-messages";
+import { TextureNames } from "../rendering/webgl/textures";
 
-export class SceneGame extends Phaser.Scene {
+export class SceneGame extends Scene {
     
+    private lastFrame = 0;
+
     private messageHandlers: FuncMessageHandler[] = [];
-    
-    private sprites: SpritePool;
-
     private units: UnitData[] = [];
 
     constructor() {
-        super({key: SceneNames.Game});
-
-        this.sprites = new SpritePool(this);
+        super(SceneNames.Game);
 
         this.messageHandlers[WSServerMessageTypes.Connected] = (message) => {
             console.log("Wat, I should already be connected!");
@@ -24,66 +22,39 @@ export class SceneGame extends Phaser.Scene {
         this.messageHandlers[WSServerMessageTypes.Disconnected] = (message) => {
             CWS.forceClose();
             API.setToken(null);
-            this.scene.start(SceneNames.Menu);
+            this.gotoScene(SceneNames.Menu);
         }
         this.messageHandlers[WSServerMessageTypes.Unit] = this.receivedUnit.bind(this);
     }
 
-    receivedUnit(message: SMUnit) {
-        const unit = this.units.find(u => u.id === message.unit.id);
-        if (unit) {
-            unit.moving = message.unit.moving;
-            unit.position = message.unit.position;
-            unit.target = message.unit.target;
-        }
-        else {
-            this.units.push(message.unit);
-        }
-    }
-
-    preload() {
+    hello() {
         CWS.setMessageHandler(this.messageHandlers);
-        this.load.image("test", "assets/test.png");
-        this.sprites.reset();
-    }
 
-    create() {
-        this.input.on("pointerdown", (pointer) => {
-            
-            if (pointer.buttons === 4) {
-                API.logout();
-            }
-
+        this.inputManager.onRightClick = (mouse) => {
             const unit = this.units.find(u => u.userId === CWS.getUserId());
             if (unit) { 
                 unit.moving = false;
                 CWS.sendMessage(<CMMoveUnit>{
                     type: WSClientMessageTypes.MoveUnit,
                     unitId: unit.id,
-                    x: pointer.worldX,
-                    y: pointer.worldY
+                    x: mouse.worldX,
+                    y: mouse.worldY
                 })
             }
-            else {
+        };
+
+        this.inputManager.onLeftClick = (mouse) => {
+            const unit = this.units.find(u => u.userId === CWS.getUserId());
+            if (!unit) {
                 CWS.sendMessage(<CMCreateUnit>{
                     type: WSClientMessageTypes.CreateUnit,
                     unitType: Math.random() > 0.5 ? UnitType.Human : UnitType.Dog,
-                    x: pointer.worldX,
-                    y: pointer.worldY
+                    x: mouse.worldX,
+                    y: mouse.worldY
                 });
             }
-        }, this);
+        };
     }
-
-    drawUnit(unit: UnitData) {
-        const sprite = this.sprites.get();
-        sprite.tilePositionX = 32 * unit.type;
-        sprite.setPosition(unit.position.x, unit.position.y);
-        sprite.setSize(32, 32);
-        sprite.setOrigin(0.5, 0.5);
-    }
-
-    private lastFrame = 0;
 
     update() {
 
@@ -95,10 +66,37 @@ export class SceneGame extends Phaser.Scene {
             tick(this.units[i], dt);
         }
 
-        this.sprites.clear();
+
+
         for (let i = 0; i < this.units.length; ++i) {
             this.drawUnit(this.units[i]);
         }
-        this.sprites.flush();
+        this.spriteRenderer.flush();
+    }
+
+    private drawUnit(unit: UnitData) {
+        this.spriteRenderer.draw({
+            x: unit.position.x,
+            y: unit.position.y,
+            width: 32,
+            height: 32,
+            textureName: TextureNames.Test,
+            textureRect: [
+                0,0,
+                32,32
+            ]
+        });
+    }
+
+    private receivedUnit(message: SMUnit) {
+        const unit = this.units.find(u => u.id === message.unit.id);
+        if (unit) {
+            unit.moving = message.unit.moving;
+            unit.position = message.unit.position;
+            unit.target = message.unit.target;
+        }
+        else {
+            this.units.push(message.unit);
+        }
     }
 }

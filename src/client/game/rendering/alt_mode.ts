@@ -1,11 +1,12 @@
 import { setupContex, clearScreenBuffer } from "./webgl/context";
-import { loadTextures, TextureNames } from "./webgl/textures";
+import { loadTextureAssets, TextureNames } from "./webgl/textures";
 import { SpriteRenderer } from "./webgl/sprite-renderer";
 import { InputManager } from "./webgl/input";
 
 function stress() {
-    setupContex();
-    loadTextures();
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    setupContex(canvas);
+    loadTextureAssets();
 
     const renderer = new SpriteRenderer();
 
@@ -40,15 +41,16 @@ function stress() {
 }
 
 function seizure() {
-    setupContex();
-    loadTextures();
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    setupContex(canvas);
+    loadTextureAssets();
     
     const inputManager = new InputManager(document.getElementById("canvas"));
 
     const renderer = new SpriteRenderer();
 
     let seziueEnabled = false;
-    inputManager.onClick = () => {
+    inputManager.onLeftClick = () => {
         seziueEnabled = !seziueEnabled;
     }
 

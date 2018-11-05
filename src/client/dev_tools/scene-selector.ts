@@ -1,4 +1,6 @@
 import { SceneNames } from "../game/scenes/scene-utility";
+import { SceneManager } from "../game/scenes/scene-manager";
+import { InputManager } from "../game/rendering/webgl/input";
 
 interface SceneSelector {
     open: boolean;
@@ -16,7 +18,7 @@ function toggleSceneSelector(sceneSelector: SceneSelector) {
     }
 }
 
-function createSceneSelectorElement(game) {
+function createSceneSelectorElement(sceneManager: SceneManager) {
     const root = document.createElement("div");
     root.classList.add("scene-selector", "hidden");
 
@@ -25,10 +27,12 @@ function createSceneSelectorElement(game) {
     root.appendChild(content);
 
     const header = document.createElement("h2");
-    header.textContent = "Open scene";
+    header.textContent = "Open Scene";
+    header.classList.add("scene-selector__header");
     content.appendChild(header);
 
     const body = document.createElement("div");
+    body.classList.add("scene-selector__body");
     content.appendChild(body);
 
     const excludedScenes = [ SceneNames.Game ];
@@ -38,9 +42,7 @@ function createSceneSelectorElement(game) {
         const button = document.createElement("button");
         button.textContent = name;
         button.onclick = () => {
-            console.log(game.scene);
-            game.scene.stop(game.scene.key);
-            game.scene.start(name);
+            sceneManager.gotoScene(name);
         }
         body.appendChild(button);
     });
@@ -48,9 +50,9 @@ function createSceneSelectorElement(game) {
     return root;
 }
 
-export function setupSceneSelector(game) {
+export function setupSceneSelector(inputManager: InputManager, sceneManager: SceneManager) {
 
-    const root = createSceneSelectorElement(game);
+    const root = createSceneSelectorElement(sceneManager);
     document.body.appendChild(root);
 
     const sceneSelector: SceneSelector = {
@@ -58,9 +60,7 @@ export function setupSceneSelector(game) {
         root: root
     };
 
-    window.onkeydown = (event) => {
-        if (event.keyCode === 220 && event.altKey) {
-            toggleSceneSelector(sceneSelector);
-        }
-    }
+    inputManager.registerKeyboardShortcut("Alt+§", () => {
+        toggleSceneSelector(sceneSelector);
+    }, "Toggle scene menu", true);
 }

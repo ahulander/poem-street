@@ -43,10 +43,23 @@
 
       .scene-selector {
         position: absolute;
+        margin: 5em;
+        border: 1px solid;
+        padding: 1em;
+        box-shadow: black -5px 5px 0px;
+        background-color: aliceblue;
       }
 
       .scene-selector.hidden {
         display: none;
+      }
+
+      .scene-selector__header {
+        margin: 0;
+      }
+
+      .scene-selector__body {
+        margin-top: 1em;
       }
 
     </style>
@@ -56,7 +69,9 @@
     <script src="vendors~main.js"></script>
     <script src="main.js"></script>
 
-    <div id="content"></div> 
+    <div id="content">
+      <canvas id="canvas" width="800" height="400"></canvas>
+    </div> 
     <form id="login" class="hidden">
       <div class="login__content">
         <h1 class="login__header">Poem Street</h1>

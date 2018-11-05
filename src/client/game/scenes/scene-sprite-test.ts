@@ -1,7 +1,10 @@
-import { SpritePool } from "../rendering/sprite-pool";
-import { EventQueue } from "../../../common/event-queue";
-import { vec2 } from "../../../common/math/vector2";
+import { Scene } from "./scene-manager";
 import { SceneNames } from "./scene-utility";
+import { EventQueue } from "../../../common/event-queue";
+import { Sprite } from "../rendering/webgl/sprite-renderer";
+import { TextureNames } from "../rendering/webgl/textures";
+import { vec2 } from "../../../common/math/vector2";
+import { MouseState } from "../rendering/webgl/input";
 
 enum GameEventType {
     CreateHuman = 0,
@@ -51,11 +54,11 @@ entityStats[EntityType.Dog] = {
     energyConsumption: 2
 };
 
-function updateEntity(entity: Entity, dt: number, input) {
+function updateEntity(entity: Entity, dt: number, input: MouseState) {
     const speed = entityStats[entity.type].speed;
     const energyConsumption = entityStats[entity.type].energyConsumption;
 
-    const d = vec2.normalize(vec2.sub({x: input.x, y: input.y}, entity.pos));
+    const d = vec2.normalize(vec2.sub({x: input.worldX, y: input.worldY}, entity.pos));
     const v = vec2.scale(vec2.normalize(vec2.add(entity.vel, d)), speed);
 
     entity.hp -= energyConsumption;
@@ -67,22 +70,41 @@ function entityIsDead(entity: Entity) {
     return entity.hp <= 0;
 }
 
-function entityDraw(sprite: Phaser.GameObjects.TileSprite, entity: Entity) {
-    sprite.tilePositionX = 32 * entity.type;
-    sprite.setPosition(entity.pos.x, entity.pos.y);
-    sprite.setSize(32, 32);
-    sprite.setOrigin(0.5, 0.5);
-    sprite.flipX = entity.vel.x < 0;
+function entityToSprite(entity: Entity): Sprite {
+    let left = 32 * entity.type;
+    let right = left + 32;
+    const top = 0;
+    const bottom = 32;
+
+    if (
+        (entity.type == EntityType.Human && entity.vel.x < 0) ||
+        (entity.type == EntityType.Dog && entity.vel.x > 0)
+    ) {
+        let temp = left;
+        left = right;
+        right = temp;
+    }
+
+    return {
+        x: entity.pos.x,
+        y: entity.pos.y,
+        width: 32,
+        height: 32,
+        textureName: TextureNames.Test,
+        textureRect: [
+            left, top,
+            right, bottom
+        ]
+    }
 }
 
-export class SceneSpriteTest extends Phaser.Scene {
+export class SceneSpriteTest extends Scene {
     
-    private sprites: SpritePool;
     private entities: Entity[] = [];
     private eventQueue: EventQueue;
 
-    constructor() {        
-        super({key: SceneNames.SpriteTest});
+    constructor() {
+        super(SceneNames.SpriteTest);
 
         this.createEntity = this.createEntity.bind(this);
 
@@ -90,30 +112,48 @@ export class SceneSpriteTest extends Phaser.Scene {
         eventHandlers[GameEventType.CreateDog] = this.createEntity;
         eventHandlers[GameEventType.CreateHuman] = this.createEntity;
 
-        this.sprites = new SpritePool(this);
         this.eventQueue = new EventQueue(eventHandlers, type => GameEventType[type]);
     }
 
-    preload() {
-        this.load.image("test", "assets/test.png");
-
-        Object.keys(this.game.scene.keys).forEach(key => {
-            if (this.scene.key !== key) {
-                this.scene.stop(key);
-            }
-        });
-    }
-
-    create() {
-        this.input.on("pointerdown", (event) => {
+    hello() {
+        this.inputManager.onLeftClick = (mouse) => {
             this.eventQueue.queue({
                 type: (Date.now() % 2 === 0) ? GameEventType.CreateDog : GameEventType.CreateHuman,
                 pos: {
-                    x: event.worldX,
-                    y: event.worldY
+                    x: mouse.worldX,
+                    y: mouse.worldY
                 }
             });
-        }, this);
+        };
+    }
+
+    private lastFrame = 0;
+
+    update() {
+
+        const now = Date.now();
+        const dt = (now - this.lastFrame) / 1000.0;
+        this.lastFrame = now;
+        
+        this.eventQueue.process();
+
+        // Update entities
+        const mouse = this.inputManager.getMouseState();
+        for (let i = 0; i < this.entities.length; ++i) {
+            updateEntity(this.entities[i], dt, mouse);
+        }
+
+        for (let i = this.entities.length - 1; i >= 0; --i) {
+            if (entityIsDead(this.entities[i])) {
+                this.entities.splice(i, 1);
+            }
+        }
+
+        // Draw entities
+        for (let i = 0; i < this.entities.length; ++i) {
+            this.spriteRenderer.draw(entityToSprite(this.entities[i]));
+        }
+        this.spriteRenderer.flush();
     }
 
     private createEntity(event: CreateEvent) {
@@ -129,33 +169,5 @@ export class SceneSpriteTest extends Phaser.Scene {
                 y: 0
             }
         });
-    }
-
-    private lastFrame = 0;
-
-    update() {
-
-        const now = Date.now();
-        const dt = (now - this.lastFrame) / 1000.0;
-        this.lastFrame = now;
-        
-        this.eventQueue.process();
-
-        // Update entities
-        for (let i = 0; i < this.entities.length; ++i) {
-            updateEntity(this.entities[i], dt, this.input);
-        }
-
-        for (let i = this.entities.length - 1; i >= 0; --i) {
-            if (entityIsDead(this.entities[i])) {
-                this.entities.splice(i, 1);
-            }
-        }
-
-        // Draw entities
-        this.sprites.clear();
-        for (let i = 0; i < this.entities.length; ++i) {
-            entityDraw(this.sprites.get(), this.entities[i]);
-        }
     }
 }
