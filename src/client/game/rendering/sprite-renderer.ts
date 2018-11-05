@@ -41,18 +41,22 @@ export interface Sprite {
     */
     textureRect: number[];
     textureName: TextureNames;
+    tint?: number[]; 
 }
 
 const spriteVertexShader = `
     attribute vec3 aVertexPosition;
     attribute vec2 aUvPosition;
+    attribute vec4 aTint;
     uniform mat4 uViewMatrix;
     uniform mat4 uProjectionMatrix;
 
     varying highp vec2 uv;
+    varying highp vec4 tint;
 
     void main() {
         uv = aUvPosition;
+        tint = aTint;
         gl_Position = uProjectionMatrix * uViewMatrix * vec4(aVertexPosition, 1);
     }
 `;
@@ -60,22 +64,25 @@ const spriteVertexShader = `
 const spriteFragmentShader = `
 
     varying highp vec2 uv;
+    varying highp vec4 tint;
 
     uniform sampler2D uSpriteAtlas;
 
     void main() {
-        gl_FragColor = texture2D(uSpriteAtlas, uv);
+        gl_FragColor = texture2D(uSpriteAtlas, uv) * tint;
     }
 `;
 
 export class SpriteRenderer {
 
-    static readonly MAX_VERTEX_DATA_COUNT = 128 * 3 * 2;
-    position_data = new Float32Array(SpriteRenderer.MAX_VERTEX_DATA_COUNT);
-    uv_data = new Float32Array(SpriteRenderer.MAX_VERTEX_DATA_COUNT);
+    static readonly MAX_VERTEX_COUNT = 128 * 3 * 2;
+    position_data = new Float32Array(SpriteRenderer.MAX_VERTEX_COUNT * 2);
+    uv_data = new Float32Array(SpriteRenderer.MAX_VERTEX_COUNT * 2);
+    color_data = new Float32Array(SpriteRenderer.MAX_VERTEX_COUNT * 4);
     vertexCount = 0;
     positions: WebGLBuffer;
     uvs: WebGLBuffer;
+    colors: WebGLBuffer;
     programInfo: ProgramInfo;
 
     textureName: TextureNames;
@@ -95,15 +102,9 @@ export class SpriteRenderer {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.uvs);
         gl.bufferData(gl.ARRAY_BUFFER, this.uv_data, gl.DYNAMIC_DRAW);
 
-        gl.vertexAttribPointer(
-            this.programInfo.attributeLocations.aUvPosition,
-            2,
-            gl.FLOAT,
-            false,
-            0,
-            8
-        );
-        gl.enableVertexAttribArray(this.programInfo.attributeLocations.aUvPosition);
+        this.colors = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.colors);
+        gl.bufferData(gl.ARRAY_BUFFER, this.color_data, gl.DYNAMIC_DRAW);
     }
 
     flush() {
@@ -147,6 +148,18 @@ export class SpriteRenderer {
         );
         gl.enableVertexAttribArray(this.programInfo.attributeLocations.aUvPosition);
 
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.colors);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.color_data);
+        gl.vertexAttribPointer(
+            this.programInfo.attributeLocations.aTint,
+            4,
+            gl.FLOAT,
+            false,
+            0,
+            0
+        );
+        gl.enableVertexAttribArray(this.programInfo.attributeLocations.aTint);
+
         gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 
         this.vertexCount = 0;
@@ -154,7 +167,7 @@ export class SpriteRenderer {
 
     draw(sprite: Sprite) {
 
-        if (this.vertexCount * 4 + 24 >= SpriteRenderer.MAX_VERTEX_DATA_COUNT || 
+        if (this.vertexCount * 4 + 24 >= SpriteRenderer.MAX_VERTEX_COUNT || 
            (this.vertexCount > 0 && this.textureName !== sprite.textureName)
         ) {
             this.flush();
@@ -187,8 +200,11 @@ export class SpriteRenderer {
         const uvRight = sprite.textureRect[2] / tw;
         const uvBottom = sprite.textureRect[3] / th;
 
+        const tint = sprite.tint !== undefined ? sprite.tint : [1,1,1,1];
+
         let iPos = this.vertexCount * 3;
         let iUv = this.vertexCount * 2;
+
         // First Triangle
         // V0
         this.position_data[iPos++] = left;
@@ -232,6 +248,15 @@ export class SpriteRenderer {
         this.position_data[iPos++] = layer;
         this.uv_data[iUv++] = uvRight;
         this.uv_data[iUv++] = uvTop;
+
+        // Sprite tint color
+        let iTint = this.vertexCount * 4;
+        for (let i = 0; i < 6; ++i) {
+            this.color_data[iTint++] = tint[0];
+            this.color_data[iTint++] = tint[1];
+            this.color_data[iTint++] = tint[2];
+            this.color_data[iTint++] = tint[3];
+        }
                 
         this.vertexCount += 6;
     }

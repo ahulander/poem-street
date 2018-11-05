@@ -11,6 +11,7 @@ import { setupSceneSelector } from "../dev_tools/scene-selector";
 import { setupInfoMenu } from "../dev_tools/info-menu";
 import { SceneSpriteStressTest } from "./scenes/test/scene-sprite-stress-test";
 import { SceneSeizure } from "./scenes/test/scene-seizure";
+import { SceneSpriteTint } from "./scenes/test/scene-sprite-tint";
 
 export function setupGame() {
 
@@ -35,7 +36,8 @@ export function setupGame() {
         SceneGame,
         SceneSpriteTest,
         SceneSpriteStressTest,
-        SceneSeizure
+        SceneSeizure,
+        SceneSpriteTint
     );
     sceneManager.gotoScene(SceneNames.SpriteTest);
 

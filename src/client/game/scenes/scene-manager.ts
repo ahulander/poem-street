@@ -109,6 +109,7 @@ export class SceneManager {
         if (this.currentScene) {
             clearScreenBuffer();
             this.currentScene.update();
+            this.spriteRenderer.flush();
         }
     }
 }

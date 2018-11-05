@@ -5,6 +5,7 @@ export interface ProgramInfo {
     attributeLocations: {
         aVertexPosition: number;
         aUvPosition: number;
+        aTint: number;
     };
     uniformLocations: {
         uProjectionMatrix: WebGLUniformLocation;
@@ -37,7 +38,8 @@ export function createProgram(vertexSource: string, fragmentSource: string): Pro
         program: program,
         attributeLocations: {
             aVertexPosition: gl.getAttribLocation(program, "aVertexPosition"),
-            aUvPosition: gl.getAttribLocation(program, "aUvPosition")
+            aUvPosition: gl.getAttribLocation(program, "aUvPosition"),
+            aTint: gl.getAttribLocation(program, "aTint")
         },
         uniformLocations: {
             uViewMatrix: gl.getUniformLocation(program, "uViewMatrix"),

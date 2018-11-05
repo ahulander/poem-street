@@ -71,7 +71,6 @@ export class SceneGame extends Scene {
         for (let i = 0; i < this.units.length; ++i) {
             this.drawUnit(this.units[i]);
         }
-        this.spriteRenderer.flush();
     }
 
     private drawUnit(unit: UnitData) {

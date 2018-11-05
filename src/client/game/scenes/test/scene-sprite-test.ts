@@ -153,7 +153,6 @@ export class SceneSpriteTest extends Scene {
         for (let i = 0; i < this.entities.length; ++i) {
             this.spriteRenderer.draw(entityToSprite(this.entities[i]));
         }
-        this.spriteRenderer.flush();
     }
 
     private createEntity(event: CreateEvent) {

@@ -43,7 +43,6 @@ export class SceneSpriteStressTest extends Scene {
                 textureName: TextureNames.Tiles
             });
         }
-        this.spriteRenderer.flush();
     }
 
 }

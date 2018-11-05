@@ -73,7 +73,5 @@ export class SceneSeizure extends Scene {
                 textureName: TextureNames.Tiles
             });
         }
-
-        this.spriteRenderer.flush();
     }
 }
