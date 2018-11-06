@@ -69,7 +69,15 @@ const spriteFragmentShader = `
     uniform sampler2D uSpriteAtlas;
 
     void main() {
-        gl_FragColor = texture2D(uSpriteAtlas, uv) * tint;
+
+        highp float cutoff = 0.5;
+        highp vec4 col = texture2D(uSpriteAtlas, uv);
+
+        if (col.a < cutoff) {
+            discard;
+        }
+
+        gl_FragColor = col * tint;
     }
 `;
 
@@ -193,7 +201,7 @@ export class SpriteRenderer {
         const right = x + w;
         const top = y;
         const bottom = y - h;
-        const layer = sprite.layer || 0;
+        const layer = (sprite.layer || 0) - y / 1000.0;
 
         const uvLeft = sprite.textureRect[0] / tw;
         const uvTop = sprite.textureRect[1] / th;
