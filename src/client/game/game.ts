@@ -12,6 +12,7 @@ import { setupInfoMenu } from "../dev_tools/info-menu";
 import { SceneSpriteStressTest } from "./scenes/test/scene-sprite-stress-test";
 import { SceneSeizure } from "./scenes/test/scene-seizure";
 import { SceneSpriteTint } from "./scenes/test/scene-sprite-tint";
+import { SceneFullscreenQuad } from "./scenes/test/scene-fullscreen-quad";
 
 export function setupGame() {
 
@@ -37,7 +38,8 @@ export function setupGame() {
         SceneSpriteTest,
         SceneSpriteStressTest,
         SceneSeizure,
-        SceneSpriteTint
+        SceneSpriteTint,
+        SceneFullscreenQuad
     );
     sceneManager.gotoScene(SceneNames.SpriteTest);
 

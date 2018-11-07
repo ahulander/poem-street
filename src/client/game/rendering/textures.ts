@@ -14,7 +14,7 @@ export interface AssetImage {
 
 const _textures: AssetImage[] = [];
 
-export function getTexture(name) {
+export function getTexture(name: TextureNames) {
     return _textures[name];
 }
 

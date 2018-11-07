@@ -193,7 +193,7 @@ export class SceneSpriteTest extends Scene {
         }, 10000);
 
         setInterval(() => {
-            console.log(this.count);
+            // console.log(this.count);
             this.count = 0;
         }, 1000);
     }
