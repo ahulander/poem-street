@@ -33,10 +33,13 @@ enum EntityType {
 }
 
 interface Entity {
+    id: number;
     type: EntityType;
     pos: vec2;
     vel: vec2;
+    target: vec2;
     hp: number;
+    cellId?: number;
 }
 
 interface EntityStats {
@@ -46,7 +49,7 @@ interface EntityStats {
 
 const entityStats: EntityStats[] = [];
 entityStats[EntityType.Human] = {
-    speed: 10,
+    speed: 60,
     energyConsumption: 1
 };
 entityStats[EntityType.Dog] = {
@@ -54,16 +57,36 @@ entityStats[EntityType.Dog] = {
     energyConsumption: 2
 };
 
+interface Cell {
+    [key: number]: Entity;
+}
+const cells: {[cellId: number]: Cell} = {};
+
 function updateEntity(entity: Entity, dt: number, input: MouseState) {
     const speed = entityStats[entity.type].speed;
     const energyConsumption = entityStats[entity.type].energyConsumption;
 
-    const d = vec2.normalize(vec2.sub({x: input.worldX, y: input.worldY}, entity.pos));
-    const v = vec2.scale(vec2.normalize(vec2.add(entity.vel, d)), speed);
+    const d = vec2.normalize(vec2.sub(entity.target, entity.pos));
+    let v = vec2.scale(vec2.normalize(vec2.add(entity.vel, d)), speed);
 
-    entity.hp -= energyConsumption;
-    entity.vel = v;
-    entity.pos = vec2.add(entity.pos, vec2.scale(entity.vel, dt));
+
+    const cell = cells[entity.cellId] || {};
+    
+    for(let id in cell) {
+        const other = cell[id];
+        if (id !== "" + entity.id &&
+            other &&
+            vec2.distance(entity.pos, other.pos) < 32
+        ) {
+            v = vec2.add(v, vec2.sub(entity.pos, other.pos));
+        }
+    }
+    
+
+    // entity.hp -= energyConsumption;
+    dt = isNaN(dt) ? 0.0 : dt;
+    entity.vel = vec2.scale(v, 1.0);
+    entity.pos = vec2.add(entity.pos, vec2.scale(entity.vel, 0.01));
 }
 
 function entityIsDead(entity: Entity) {
@@ -86,11 +109,12 @@ function entityToSprite(entity: Entity): Sprite {
     }
 
     return {
-        x: entity.pos.x,
-        y: entity.pos.y,
+        x: Math.floor(entity.pos.x),
+        y: Math.floor(entity.pos.y),
         width: 32,
         height: 32,
         textureName: TextureNames.Test,
+        originY: 1,
         textureRect: [
             left, top,
             right, bottom
@@ -102,6 +126,8 @@ export class SceneSpriteTest extends Scene {
     
     private entities: Entity[] = [];
     private eventQueue: EventQueue;
+    private nextEntityId: number = 0;
+    private randomizeTargetInterval;
 
     constructor() {
         super(SceneNames.SpriteTest);
@@ -125,11 +151,63 @@ export class SceneSpriteTest extends Scene {
                 }
             });
         };
+
+        for (let y = 0; y < 10; ++y) {
+            for (let x = 0; x < 10; ++x) {
+                const index = x + y * 10;
+                cells[index] = {};
+            }
+        }
+
+        this.entities = [];
+        this.nextEntityId = 0;
+
+        const count = 2000;
+        for (let i = 0; i < count; ++i) {
+            this.entities.push({
+                id: this.nextEntityId++,
+                hp: getRandomInt(1, 10) * 100,
+                type: EntityType.Human,
+                pos: {
+                    x: -300 + Math.floor(Math.random() * 600),
+                    y: -150 + Math.floor(Math.random() * 300),
+                },
+                vel: {
+                    x: 0,
+                    y: 0
+                },
+                target: {
+                    x: -300 + Math.floor(Math.random() * 600),
+                    y: -150 + Math.floor(Math.random() * 300),
+                }
+            });
+        }
+
+        this.randomizeTargetInterval = setInterval(() => {
+            this.entities.forEach(e => {
+                e.target = {
+                    x: -300 + Math.floor(Math.random() * 600),
+                    y: -150 + Math.floor(Math.random() * 300),
+                };
+            })
+        }, 10000);
+
+        setInterval(() => {
+            console.log(this.count);
+            this.count = 0;
+        }, 1000);
+    }
+
+    goodbye() {
+        clearInterval(this.randomizeTargetInterval);
     }
 
     private lastFrame = 0;
+    private count = 0;
 
     update() {
+
+        this.count++;
 
         const now = Date.now();
         const dt = (now - this.lastFrame) / 1000.0;
@@ -139,15 +217,33 @@ export class SceneSpriteTest extends Scene {
 
         // Update entities
         const mouse = this.inputManager.getMouseState();
+        // this.entities[this.entities.length - 1].pos = {
+        //     x: mouse.worldX,
+        //     y: mouse.worldY
+        // };
         for (let i = 0; i < this.entities.length; ++i) {
-            updateEntity(this.entities[i], dt, mouse);
-        }
+            const entity = this.entities[i];
+            updateEntity(entity, dt, mouse);
 
-        for (let i = this.entities.length - 1; i >= 0; --i) {
-            if (entityIsDead(this.entities[i])) {
-                this.entities.splice(i, 1);
+
+            if (cells[entity.cellId]) {
+                delete cells[entity.cellId][entity.id];
+            }
+
+            const x = Math.floor((entity.pos.x + 500) / 100);
+            const y = Math.floor((entity.pos.y + 500) / 100);
+            const index = x + y * 10;
+            if (cells[index]) {
+                entity.cellId = index;
+                cells[index][entity.id] = entity;
             }
         }
+
+        // for (let i = this.entities.length - 1; i >= 0; --i) {
+        //     if (entityIsDead(this.entities[i])) {
+        //         this.entities.splice(i, 1);
+        //     }
+        // }
 
         // Draw entities
         for (let i = 0; i < this.entities.length; ++i) {
@@ -160,12 +256,17 @@ export class SceneSpriteTest extends Scene {
         const type = event.type === GameEventType.CreateDog ? EntityType.Dog : EntityType.Human;
 
         this.entities.push({
+            id: this.nextEntityId++,
             hp: getRandomInt(1, 10) * 100,
             type: type,
             pos: event.pos,
             vel: {
                 x: 0,
                 y: 0
+            },
+            target: {
+                x: -300 + Math.floor(Math.random() * 600),
+                y: -150 + Math.floor(Math.random() * 300),
             }
         });
     }

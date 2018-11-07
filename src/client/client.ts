@@ -1,4 +1,5 @@
 import { setupGame } from "./game/game";
+import { setupPixiGame } from "./game/game-pixi";
 
 /*
 
@@ -6,10 +7,11 @@ import { setupGame } from "./game/game";
 
 */
 
-async function initGame() {
-    const game = setupGame();
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-    initGame();
+    const PIXI = (<any>window).PIXI_STYLE;
+    if  (PIXI) {
+        setupPixiGame();
+    } else {
+        setupGame();
+    }
 });
