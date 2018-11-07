@@ -1,4 +1,4 @@
-import { Scene } from "../scene-manager";
+import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { TextureNames } from "../../rendering/textures";
 

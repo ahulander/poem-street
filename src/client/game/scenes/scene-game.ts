@@ -1,5 +1,5 @@
 import * as API from "../../api";
-import { Scene } from "./scene-manager";
+import { Scene } from "./scene";
 import { SceneNames } from "./scene-utility";
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { UnitData, tick, UnitType } from "../../../common/entities/unit";

@@ -1,5 +1,5 @@
+import { Scene } from "./scene";
 import * as API from "../../api";
-import { Scene } from "./scene-manager";
 import { SceneNames } from "./scene-utility";
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { SMConnectedToServer, WSServerMessageTypes } from "../../../common/api/ws-messages";

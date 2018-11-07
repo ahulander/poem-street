@@ -1,4 +1,4 @@
-import { Scene } from "../scene-manager";
+import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { EventQueue } from "../../../../common/event-queue";
 import { Sprite } from "../../rendering/sprite-renderer";
