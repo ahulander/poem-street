@@ -1,7 +1,7 @@
 import { SceneNames } from "./scene-utility";
-import { InputManager } from "../input/input";
-import { SpriteRenderer } from "../rendering/sprite-renderer";
-import { clearScreenBuffer } from "../rendering/context";
+import { InputManager } from "../../input/input";
+import { SpriteRenderer } from "../../rendering/sprite-renderer";
+import { clearScreenBuffer } from "../../rendering/context";
 import { Scene, SceneConstructor, setTempSceneManager } from "./scene";
 
 export class SceneManager {

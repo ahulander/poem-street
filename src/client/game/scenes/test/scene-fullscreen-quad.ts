@@ -1,10 +1,10 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
-import { FullscreenQuad } from "../../rendering/fullscreen-quad";
-import { clearScreenBuffer } from "../../rendering/context";
-import { ProgramInfo, createProgram, setUniform } from "../../rendering/shader";
-import { getTexture, TextureNames } from "../../rendering/textures";
-import { RenderTarget } from "../../rendering/render-target";
+import { FullscreenQuad } from "../../../rendering/fullscreen-quad";
+import { clearScreenBuffer } from "../../../rendering/context";
+import { ProgramInfo, createProgram, setUniform } from "../../../rendering/shader";
+import { getTexture, TextureNames } from "../../../rendering/textures";
+import { RenderTarget } from "../../../rendering/render-target";
 
 const fragmentSource = `
     varying highp vec2 uv;

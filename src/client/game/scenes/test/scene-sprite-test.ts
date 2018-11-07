@@ -1,10 +1,10 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { EventQueue } from "../../../../common/event-queue";
-import { Sprite } from "../../rendering/sprite-renderer";
-import { TextureNames } from "../../rendering/textures";
+import { Sprite } from "../../../rendering/sprite-renderer";
+import { TextureNames } from "../../../rendering/textures";
 import { vec2 } from "../../../../common/math/vector2";
-import { MouseState } from "../../input/input";
+import { MouseState } from "../../../input/input";
 
 enum GameEventType {
     CreateHuman = 0,

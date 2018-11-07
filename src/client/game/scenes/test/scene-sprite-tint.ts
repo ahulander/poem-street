@@ -1,6 +1,6 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
-import { TextureNames } from "../../rendering/textures";
+import { TextureNames } from "../../../rendering/textures";
 
 function createColorPicker(onchange) {
     const result = document.createElement("div");

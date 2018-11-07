@@ -1,7 +1,7 @@
 import { SceneManager } from "./scene-manager";
 import { SceneNames } from "./scene-utility";
-import { InputManager } from "../input/input";
-import { SpriteRenderer } from "../rendering/sprite-renderer";
+import { InputManager } from "../../input/input";
+import { SpriteRenderer } from "../../rendering/sprite-renderer";
 
 var _tempSceneManager: SceneManager;
 

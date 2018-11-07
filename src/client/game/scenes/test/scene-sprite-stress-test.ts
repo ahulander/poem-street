@@ -1,5 +1,5 @@
 import { Scene } from "../scene";
-import { TextureNames } from "../../rendering/textures";
+import { TextureNames } from "../../../rendering/textures";
 import { SceneNames } from "../scene-utility";
 
 export class SceneSpriteStressTest extends Scene {

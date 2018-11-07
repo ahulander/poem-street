@@ -1,11 +1,11 @@
 import { SceneManager } from "./scenes/scene-manager";
-import { setupContex } from "./rendering/context";
-import { InputManager } from "./input/input";
+import { setupContex } from "../rendering/context";
+import { InputManager } from "../input/input";
 import { SceneNames } from "./scenes/scene-utility";
-import { SpriteRenderer } from "./rendering/sprite-renderer";
+import { SpriteRenderer } from "../rendering/sprite-renderer";
 import { SceneLogin } from "./scenes/scene-menu";
 import { SceneGame } from "./scenes/scene-game";
-import { loadTextureAssets } from "./rendering/textures";
+import { loadTextureAssets } from "../rendering/textures";
 import { SceneSpriteTest } from "./scenes/test/scene-sprite-test";
 import { setupSceneSelector } from "../dev_tools/scene-selector";
 import { setupInfoMenu } from "../dev_tools/info-menu";
