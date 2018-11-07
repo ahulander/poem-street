@@ -1,4 +1,3 @@
-import { getContext } from "./context";
 
 /*
     Important About Shader!!
@@ -36,7 +35,7 @@ function findNamesByType(sourceLines: string[], type: string): any[] {
         }));
 }
 
-export function enableVertexAttribute(gl, program: ProgramInfo, name: string) {
+export function enableVertexAttribute(gl: WebGLRenderingContext, program: ProgramInfo, name: string) {
     
     const attribute = program.attributes[name];
     if (!attribute) {
@@ -68,12 +67,10 @@ export function setUniform(program: ProgramInfo, name, value: any) {
     uniform.setValue(uniform.location, value);
 }
 
-export function createProgram(vertexSource: string, fragmentSource: string): ProgramInfo {
+export function createProgram(gl: WebGLRenderingContext, vertexSource: string, fragmentSource: string): ProgramInfo {
     
-    const gl = getContext();
-
-    const vertex = compileShader(vertexSource, gl.VERTEX_SHADER);
-    const fragment = compileShader(fragmentSource, gl.FRAGMENT_SHADER);
+    const vertex = compileShader(gl, vertexSource, gl.VERTEX_SHADER);
+    const fragment = compileShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
 
     if (!vertex || !fragment) {
         return null;
@@ -134,9 +131,7 @@ export function createProgram(vertexSource: string, fragmentSource: string): Pro
     };
 }
 
-function compileShader(source: string, type) {
-
-    const gl = getContext();
+function compileShader(gl: WebGLRenderingContext, source: string, type) {
 
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);

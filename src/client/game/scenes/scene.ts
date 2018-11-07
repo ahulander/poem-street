@@ -25,11 +25,13 @@ export class Scene {
 
     readonly key: SceneNames;
     private sceneManager: SceneManager;
+    readonly gl: WebGLRenderingContext;
     readonly inputManager: InputManager;
     readonly spriteRenderer: SpriteRenderer;
 
     constructor(key: SceneNames) {
         this.key = key;
+        this.gl = _tempSceneManager.gl;
         this.sceneManager = _tempSceneManager;
         this.inputManager = _tempSceneManager.inputManager;
         this.spriteRenderer = _tempSceneManager.spriteRenderer;

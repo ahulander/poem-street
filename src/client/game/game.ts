@@ -23,14 +23,15 @@ export function setupGame() {
         return;
     }
 
-    if (!setupContex(canvas)) {
+    const gl = setupContex(canvas);
+    if (!gl) {
         return;
     }
     
-    loadTextureAssets();
-    const spriteRenderer = new SpriteRenderer();
+    loadTextureAssets(gl);
+    const spriteRenderer = new SpriteRenderer(gl);
     const inputManger = new InputManager(canvas);
-    const sceneManager = new SceneManager(inputManger, spriteRenderer);
+    const sceneManager = new SceneManager(gl, inputManger, spriteRenderer);
 
     sceneManager.register(
         SceneLogin,

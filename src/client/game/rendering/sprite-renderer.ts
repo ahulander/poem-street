@@ -1,5 +1,4 @@
 import { ProgramInfo, createProgram, enableVertexAttribute, setUniform } from "./shader";
-import { getContext } from "./context";
 import { getTexture, AssetImage, TextureNames } from "./textures";
 import { getMainCameraMatrices } from "./camera";
 
@@ -95,12 +94,13 @@ export class SpriteRenderer {
 
     textureName: TextureNames;
     texture: AssetImage;
+    private gl: WebGLRenderingContext;
 
-    constructor() {
+    constructor(gl: WebGLRenderingContext) {
 
-        const gl = getContext();
+        this.gl = gl;
 
-        this.programInfo = createProgram(spriteVertexShader, spriteFragmentShader);
+        this.programInfo = createProgram(gl, spriteVertexShader, spriteFragmentShader);
 
         this.positions = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.positions);
@@ -121,7 +121,7 @@ export class SpriteRenderer {
             return;
         }
 
-        const gl = getContext();
+        const gl = this.gl;
         const camera = getMainCameraMatrices();
 
         gl.activeTexture(gl.TEXTURE0);

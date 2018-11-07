@@ -1,7 +1,7 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { FullscreenQuad } from "../../rendering/fullscreen-quad";
-import { getContext, clearScreenBuffer } from "../../rendering/context";
+import { clearScreenBuffer } from "../../rendering/context";
 import { ProgramInfo, createProgram, setUniform } from "../../rendering/shader";
 import { getTexture, TextureNames } from "../../rendering/textures";
 import { RenderTarget } from "../../rendering/render-target";
@@ -30,7 +30,6 @@ const vertexUpsideDownStyle = `
 
 export class SceneFullscreenQuad extends Scene {
 
-    private gl: WebGLRenderingContext;
     private quad: FullscreenQuad;
 
     private programInfo: ProgramInfo;
@@ -40,14 +39,12 @@ export class SceneFullscreenQuad extends Scene {
     
     constructor() {
         super(SceneNames.TestFullscreenQuad);
-
-        this.gl = getContext();
         this.quad = new FullscreenQuad(this.gl);
 
         this.texture = getTexture(TextureNames.Tiles);
 
-        this.programInfo = createProgram(FullscreenQuad.defaultFullscreenVertexSource, fragmentSource);
-        this.screenProgramInfo = createProgram(vertexUpsideDownStyle, fragmentSource);
+        this.programInfo = createProgram(this.gl, FullscreenQuad.defaultFullscreenVertexSource, fragmentSource);
+        this.screenProgramInfo = createProgram(this.gl, vertexUpsideDownStyle, fragmentSource);
 
         this.renderTarget = new RenderTarget(this.gl, 200, 100);
     }
@@ -91,7 +88,7 @@ export class SceneFullscreenQuad extends Scene {
         this.drawScene(gl);
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        clearScreenBuffer();
+        clearScreenBuffer(this.gl);
         this.flushToScreen(gl);        
     }
 

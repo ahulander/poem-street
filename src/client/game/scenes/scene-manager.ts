@@ -10,8 +10,10 @@ export class SceneManager {
     private currentScene: Scene;
     readonly inputManager: InputManager;
     readonly spriteRenderer: SpriteRenderer;
+    readonly gl: WebGLRenderingContext;
 
-    constructor(inputManager: InputManager, spriteRenderer: SpriteRenderer) {
+    constructor(gl: WebGLRenderingContext, inputManager: InputManager, spriteRenderer: SpriteRenderer) {
+        this.gl = gl;
         this.inputManager = inputManager;
         this.spriteRenderer = spriteRenderer;
     }
@@ -51,7 +53,7 @@ export class SceneManager {
 
     update() {
         if (this.currentScene) {
-            clearScreenBuffer();
+            clearScreenBuffer(this.gl);
             this.currentScene.update();
             this.spriteRenderer.flush();
         }
