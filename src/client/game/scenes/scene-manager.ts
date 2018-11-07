@@ -1,7 +1,6 @@
 import { SceneNames } from "./scene-utility";
 import { InputManager } from "../../input/input";
 import { SpriteRenderer } from "../../rendering/sprite-renderer";
-import { clearScreenBuffer } from "../../rendering/context";
 import { Scene, SceneConstructor, setTempSceneManager } from "./scene";
 
 export class SceneManager {
@@ -53,9 +52,7 @@ export class SceneManager {
 
     update() {
         if (this.currentScene) {
-            clearScreenBuffer(this.gl);
             this.currentScene.update();
-            this.spriteRenderer.flush();
         }
     }
 }

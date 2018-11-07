@@ -14,10 +14,12 @@ export class FullscreenQuad {
         }
     `;
 
+    private gl: WebGLRenderingContext;
     private bufferPositions: WebGLBuffer;
     private bufferUvs: WebGLBuffer;
 
     constructor(gl: WebGLRenderingContext) {
+        this.gl = gl;
         this.bufferPositions = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPositions);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
@@ -43,7 +45,8 @@ export class FullscreenQuad {
         ]), gl.STATIC_DRAW);
     }
 
-    draw(gl: WebGLRenderingContext, program: ProgramInfo) {
+    draw(program: ProgramInfo) {
+        const gl = this.gl;
         gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferPositions);
         enableVertexAttribute(gl, program, "aVertexPosition");
 

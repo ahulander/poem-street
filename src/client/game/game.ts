@@ -11,8 +11,11 @@ import { setupInfoMenu } from "../dev_tools/info-menu";
 import { SceneSpriteStressTest } from "./scenes/test/scene-sprite-stress-test";
 import { SceneSeizure } from "./scenes/test/scene-seizure";
 import { SceneSpriteTint } from "./scenes/test/scene-sprite-tint";
-import { SceneFullscreenQuad } from "./scenes/test/scene-fullscreen-quad";
 import { Assets } from "../assets/assets";
+import { RenderPipeline } from "../rendering/post-fx-pipeline";
+import { RenderTarget } from "../rendering/render-target";
+import { CombinePass } from "./post_fx/combine-pass";
+import { PassBlur } from "./post_fx/pass-blur";
 
 export function setupGame() {
 
@@ -29,9 +32,26 @@ export function setupGame() {
     }
     
     Assets.loadAssets(gl);
-    const spriteRenderer = new SpriteRenderer(gl);
+
+    const spriteMap = new RenderTarget(gl, 800, 400);
+    const tileMap = new RenderTarget(gl, 800, 400);
+    const glowMap = new RenderTarget(gl, 800, 400);
+    const fovMap = new RenderTarget(gl, 800, 400);
+    
+    const spriteRenderer = new SpriteRenderer(gl, spriteMap);
     const inputManger = new InputManager(canvas);
     const sceneManager = new SceneManager(gl, inputManger, spriteRenderer);
+    const renderPipeline = new RenderPipeline(
+        gl,
+        spriteMap,
+        tileMap,
+        glowMap,
+        fovMap,
+        [
+            CombinePass,
+            PassBlur,
+        ]
+     );
 
     sceneManager.register(
         SceneLogin,
@@ -39,13 +59,23 @@ export function setupGame() {
         SceneSpriteTest,
         SceneSpriteStressTest,
         SceneSeizure,
-        SceneSpriteTint,
-        SceneFullscreenQuad
+        SceneSpriteTint
     );
     sceneManager.gotoScene(SceneNames.SpriteTest);
 
     setInterval(() => {
+        
+
+        spriteMap.clear();
+        tileMap.clear();
+        glowMap.clear();
+        fovMap.clear();
+        
         sceneManager.update();
+
+        spriteRenderer.flush();
+        
+        renderPipeline.apply();
     }, 16);
 
     // Dev Tool, should probably be excluded in a production build =) 

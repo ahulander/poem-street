@@ -1,4 +1,4 @@
-import { InputManager } from "../game/input/input";
+import { InputManager } from "../input/input";
 
 export function setupInfoMenu(inputManager: InputManager) {
     const root = document.createElement("div");

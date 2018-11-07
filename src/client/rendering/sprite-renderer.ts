@@ -3,6 +3,7 @@ import { Texture } from "./textures";
 import { getMainCameraMatrices } from "./camera";
 import { Assets } from "../assets/assets";
 import { Sprite } from "./sprite";
+import { RenderTarget } from "./render-target";
 
 const spriteVertexShader = `
     attribute vec3 aVertexPosition;
@@ -56,10 +57,12 @@ export class SpriteRenderer {
     textureName: Assets.Textures;
     texture: Texture;
     private gl: WebGLRenderingContext;
+    private spriteMap: RenderTarget;
 
-    constructor(gl: WebGLRenderingContext) {
+    constructor(gl: WebGLRenderingContext, spriteMap: RenderTarget) {
 
         this.gl = gl;
+        this.spriteMap = spriteMap;
 
         this.programInfo = createProgram(gl, spriteVertexShader, spriteFragmentShader);
 
@@ -82,13 +85,15 @@ export class SpriteRenderer {
             return;
         }
 
+        this.spriteMap.use();
+
         const gl = this.gl;
         const camera = getMainCameraMatrices();
 
+        gl.useProgram(this.programInfo.program);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture.texture);
 
-        gl.useProgram(this.programInfo.program);
         setUniform(this.programInfo, "uViewMatrix", camera.view);
         setUniform(this.programInfo, "uProjectionMatrix", camera.projection);
         setUniform(this.programInfo, "uSpriteAtlas", 0);

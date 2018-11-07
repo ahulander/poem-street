@@ -1,12 +1,16 @@
 
 export class RenderTarget {
 
-    texture;
-    private framebuffer;
-    private width;
-    private height;
+    
+    texture: WebGLTexture;
+    private framebuffer: WebGLFramebuffer;
+    private width: number;
+    private height: number;
+    private gl: WebGLRenderingContext;
 
     constructor(gl: WebGLRenderingContext, width: number, height: number) {
+
+        this.gl = gl;
 
         const target = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, target);
@@ -38,10 +42,17 @@ export class RenderTarget {
         this.height = height;
     }
 
-    use(gl: WebGLRenderingContext) {
+    clear() {
+        const gl = this.gl;
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         gl.viewport(0, 0, this.width, this.height);
         gl.clearColor(0,0,0,0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    }
+
+    use() {
+        const gl = this.gl;
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+        gl.viewport(0, 0, this.width, this.height);
     }
 }

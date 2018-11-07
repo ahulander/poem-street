@@ -5,6 +5,5 @@ export enum SceneNames {
     SpriteTest = "sprite-test",
     TestSpriteStress = "sprite-stress",
     TestSeizure = "seizure",
-    TestSpriteTint = "sprite-tint",
-    TestFullscreenQuad = "fullscreen-quad"
+    TestSpriteTint = "sprite-tint"
 }
