@@ -111,6 +111,12 @@ export function createProgram(gl: WebGLRenderingContext, vertexSource: string, f
         },
         "sampler2D": (location, value) => {
             gl.uniform1i(location, value);
+        },
+        "float": (location, value) => {
+            gl.uniform1f(location, value);
+        },
+        "vec2": (location, value) => {
+            gl.uniform2fv(location, value);
         }
     }
     const defaultSetter = (location, value) => {

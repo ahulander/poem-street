@@ -16,6 +16,7 @@ import { RenderPipeline } from "../rendering/post-fx-pipeline";
 import { RenderTarget } from "../rendering/render-target";
 import { CombinePass } from "./post_fx/combine-pass";
 import { PassBlur } from "./post_fx/pass-blur";
+import { PassFog } from "./post_fx/pass-fog";
 
 export function setupGame() {
 
@@ -49,7 +50,7 @@ export function setupGame() {
         fovMap,
         [
             CombinePass,
-            PassBlur,
+            PassFog
         ]
      );
 

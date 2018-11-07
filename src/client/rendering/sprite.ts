@@ -38,5 +38,5 @@ export interface Sprite {
     */
     textureRect: number[];
     textureName: Assets.Textures;
-    tint?: number[]; 
+    tint?: number[];
 }
