@@ -1,33 +1,11 @@
 
-export enum TextureNames {
-    Tiles = 0,
-    RedTiles,
-    Test
-}
-
-export interface AssetImage {
+export interface Texture {
     texture: WebGLTexture;
     width: number;
     height: number;
 }
 
-const _textures: AssetImage[] = [];
-
-export function getTexture(name: TextureNames) {
-    return _textures[name];
-}
-
-export function loadTextureAssets(gl: WebGLRenderingContext) {
-    load(gl, TextureNames.Tiles, "/assets/tiles.png");
-    load(gl, TextureNames.RedTiles, "/assets/tiles_red.png");
-    load(gl, TextureNames.Test, "assets/test.png");
-}
-
-function load(gl: WebGLRenderingContext, name: TextureNames, url: string) {
-    _textures[name] = loadImage(gl, url);
-}
-
-function loadImage(gl: WebGLRenderingContext, url) {
+export function loadImage(gl: WebGLRenderingContext, url) {
 
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);

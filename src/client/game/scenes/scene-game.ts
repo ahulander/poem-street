@@ -4,7 +4,7 @@ import { SceneNames } from "./scene-utility";
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { UnitData, tick, UnitType } from "../../../common/entities/unit";
 import { WSServerMessageTypes, SMUnit, CMMoveUnit, CMCreateUnit, WSClientMessageTypes } from "../../../common/api/ws-messages";
-import { TextureNames } from "../../rendering/textures";
+import { Assets } from "../../assets/assets";
 
 export class SceneGame extends Scene {
     
@@ -79,7 +79,7 @@ export class SceneGame extends Scene {
             y: unit.position.y,
             width: 32,
             height: 32,
-            textureName: TextureNames.Test,
+            textureName: Assets.Textures.Test,
             textureRect: [
                 0,0,
                 32,32

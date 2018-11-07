@@ -3,8 +3,8 @@ import { SceneNames } from "../scene-utility";
 import { FullscreenQuad } from "../../../rendering/fullscreen-quad";
 import { clearScreenBuffer } from "../../../rendering/context";
 import { ProgramInfo, createProgram, setUniform } from "../../../rendering/shader";
-import { getTexture, TextureNames } from "../../../rendering/textures";
 import { RenderTarget } from "../../../rendering/render-target";
+import { Assets } from "../../../assets/assets";
 
 const fragmentSource = `
     varying highp vec2 uv;
@@ -41,7 +41,7 @@ export class SceneFullscreenQuad extends Scene {
         super(SceneNames.TestFullscreenQuad);
         this.quad = new FullscreenQuad(this.gl);
 
-        this.texture = getTexture(TextureNames.Tiles);
+        this.texture = Assets.getTexture(Assets.Textures.Tiles);
 
         this.programInfo = createProgram(this.gl, FullscreenQuad.defaultFullscreenVertexSource, fragmentSource);
         this.screenProgramInfo = createProgram(this.gl, vertexUpsideDownStyle, fragmentSource);
@@ -60,7 +60,7 @@ export class SceneFullscreenQuad extends Scene {
         this.spriteRenderer.draw({
             x: mouse.worldX,
             y: mouse.worldY,
-            textureName: TextureNames.Test,
+            textureName: Assets.Textures.Test,
             originY: 1,
             textureRect: [0,0,32,32],
             height: 64,

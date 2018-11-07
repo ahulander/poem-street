@@ -1,6 +1,6 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
-import { TextureNames } from "../../../rendering/textures";
+import { Assets } from "../../../assets/assets";
 
 export class SceneSeizure extends Scene {
     
@@ -53,7 +53,7 @@ export class SceneSeizure extends Scene {
                         u, v,
                         u + 32, v + 32
                     ],
-                    textureName: Math.random() > 0.5 ? TextureNames.Tiles : TextureNames.RedTiles,
+                    textureName: Math.random() > 0.5 ? Assets.Textures.Tiles : Assets.Textures.RedTiles,
                     layer: -10
                 });
             }
@@ -70,7 +70,7 @@ export class SceneSeizure extends Scene {
                     0, 0,
                     32, 32
                 ],
-                textureName: TextureNames.Tiles
+                textureName: Assets.Textures.Tiles
             });
         }
     }

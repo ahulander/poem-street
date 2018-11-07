@@ -2,9 +2,9 @@ import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { EventQueue } from "../../../../common/event-queue";
 import { Sprite } from "../../../rendering/sprite-renderer";
-import { TextureNames } from "../../../rendering/textures";
 import { vec2 } from "../../../../common/math/vector2";
 import { MouseState } from "../../../input/input";
+import { Assets } from "../../../assets/assets";
 
 enum GameEventType {
     CreateHuman = 0,
@@ -113,7 +113,7 @@ function entityToSprite(entity: Entity): Sprite {
         y: Math.floor(entity.pos.y),
         width: 32,
         height: 32,
-        textureName: TextureNames.Test,
+        textureName: Assets.Textures.Test,
         originY: 1,
         textureRect: [
             left, top,

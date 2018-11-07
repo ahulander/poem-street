@@ -1,6 +1,7 @@
 import { ProgramInfo, createProgram, enableVertexAttribute, setUniform } from "./shader";
-import { getTexture, AssetImage, TextureNames } from "./textures";
+import { Texture } from "./textures";
 import { getMainCameraMatrices } from "./camera";
+import { Assets } from "../assets/assets";
 
 export interface Sprite {
 
@@ -39,7 +40,7 @@ export interface Sprite {
         [4] -> bottom
     */
     textureRect: number[];
-    textureName: TextureNames;
+    textureName: Assets.Textures;
     tint?: number[]; 
 }
 
@@ -92,8 +93,8 @@ export class SpriteRenderer {
     colors: WebGLBuffer;
     programInfo: ProgramInfo;
 
-    textureName: TextureNames;
-    texture: AssetImage;
+    textureName: Assets.Textures;
+    texture: Texture;
     private gl: WebGLRenderingContext;
 
     constructor(gl: WebGLRenderingContext) {
@@ -157,7 +158,7 @@ export class SpriteRenderer {
             this.flush();
         }
         
-        this.texture = getTexture(sprite.textureName);
+        this.texture = Assets.getTexture(sprite.textureName);
         this.textureName = sprite.textureName;
         
     

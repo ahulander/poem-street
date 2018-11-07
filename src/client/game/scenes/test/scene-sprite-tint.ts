@@ -1,6 +1,6 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
-import { TextureNames } from "../../../rendering/textures";
+import { Assets } from "../../../assets/assets";
 
 function createColorPicker(onchange) {
     const result = document.createElement("div");
@@ -51,7 +51,7 @@ export class SceneSpriteTint extends Scene {
             y: 0,
             height: 128,
             width: 128,
-            textureName: TextureNames.Tiles,
+            textureName: Assets.Textures.Tiles,
             textureRect: [0,0,128,128],
             tint: this.color
         });

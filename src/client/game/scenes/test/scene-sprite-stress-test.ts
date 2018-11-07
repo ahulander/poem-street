@@ -1,6 +1,6 @@
 import { Scene } from "../scene";
-import { TextureNames } from "../../../rendering/textures";
 import { SceneNames } from "../scene-utility";
+import { Assets } from "../../../assets/assets";
 
 export class SceneSpriteStressTest extends Scene {
 
@@ -40,7 +40,7 @@ export class SceneSpriteStressTest extends Scene {
                     u, v,
                     u + 32, v + 32
                 ],
-                textureName: TextureNames.Tiles
+                textureName: Assets.Textures.Tiles
             });
         }
     }
