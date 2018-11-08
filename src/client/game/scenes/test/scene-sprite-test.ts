@@ -162,7 +162,7 @@ export class SceneSpriteTest extends Scene {
         this.entities = [];
         this.nextEntityId = 0;
 
-        const count = 2000;
+        const count = 200;
         for (let i = 0; i < count; ++i) {
             this.entities.push({
                 id: this.nextEntityId++,

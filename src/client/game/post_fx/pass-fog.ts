@@ -57,7 +57,7 @@ uniform highp float uTime;
 uniform highp vec2 uScreenOffset;
 uniform sampler2D uSample;
 
-highp float random (in vec2 _st) {
+highp float random (in highp vec2 _st) {
     return fract(sin(dot(_st.xy,
                          vec2(-0.270,-0.200)))*
         43758.5453123);
@@ -65,7 +65,7 @@ highp float random (in vec2 _st) {
 
 // Based on Morgan McGuire @morgan3d
 // https://www.shadertoy.com/view/4dS3Wd
-highp float noise (in vec2 _st) {
+highp float noise (in highp vec2 _st) {
     highp vec2 i = floor(_st);
     highp vec2 f = fract(_st);
 
@@ -84,7 +84,7 @@ highp float noise (in vec2 _st) {
 
 #define NUM_OCTAVES 5
 
-highp float fbm ( in vec2 _st) {
+highp float fbm ( in highp vec2 _st) {
     highp float v = 0.0;
     highp float a = 0.5;
     highp vec2 shift = vec2(100.0);
