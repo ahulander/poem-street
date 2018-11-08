@@ -54,6 +54,12 @@ export class FieldOfViewRenderer {
         this.fovMap = fovMap;
     }
 
+    clear() {
+        this.fovMap.use();
+        this.gl.clearColor(1,1,1,1);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    }
+
     drawCircle(circle: FovCircle) {
         
         this.tempPosition[0] = circle.x;

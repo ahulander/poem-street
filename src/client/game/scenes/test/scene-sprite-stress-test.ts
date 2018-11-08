@@ -27,6 +27,8 @@ export class SceneSpriteStressTest extends Scene {
     update () {
         this.frameCount++;
 
+        this.fovRenderer.clear();
+
         const count = 40000;
         for (let i = 0; i < count; ++i) {
             const x = (1 - Math.random() * 2) * 800;

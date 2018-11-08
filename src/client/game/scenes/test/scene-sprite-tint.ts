@@ -46,6 +46,7 @@ export class SceneSpriteTint extends Scene {
     }
 
     update() {
+        this.fovRenderer.clear();
         this.spriteRenderer.draw({
             x: 0,
             y: 0,

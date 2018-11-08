@@ -39,6 +39,8 @@ export class SceneSeizure extends Scene {
 
     update() {
         
+        this.fovRenderer.clear();
+
         if (this.seziueEnabled) {
             const count = Math.floor(Math.random() * 5000);
             for (let i = 0; i < count; ++i) {

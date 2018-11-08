@@ -95,7 +95,7 @@ const vertexScreenPass = `
     varying highp vec2 uv;
 
     void main() {
-        uv = vec2(aUv.x, aUv.y);
+        uv = vec2(aUv.x, 1.0 - aUv.y);
         gl_Position = vec4(aVertexPosition, 0, 1);
     }
 `;

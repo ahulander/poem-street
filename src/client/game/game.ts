@@ -52,6 +52,7 @@ export function setupGame() {
         fovMap,
         [
             CombinePass,
+            PassBlur,
             PassFog
         ]
      );

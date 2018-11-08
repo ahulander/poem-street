@@ -136,7 +136,10 @@ void main() {
     //    color = color + texture2D(uSample, uv).rgb * color.r * (texture2D(uFovMap, uv).a);
     // }
 
-    color = mix(color, texture2D(uSample, uv).rgb, (texture2D(uFovMap, uv).a));
+    // Hack: ?
+    highp vec2 fogUv = uv;
+    fogUv.y = 1.0 - fogUv.y;
+    color = mix(color, texture2D(uSample, uv).rgb, (texture2D(uFovMap, fogUv).a));
 
     gl_FragColor = vec4(color, 1);
 }
