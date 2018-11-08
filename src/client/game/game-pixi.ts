@@ -1,56 +1,6 @@
 import * as PIXI from "pixi.js";
 import "pixi-layers";
 
-class SpritePool {
-
-    private group: PIXI.display.Group;
-    private container: PIXI.Container;
-    private sprites: PIXI.extras.TilingSprite[] = [];
-    private next = 0;
-    private texture: PIXI.Texture;
-
-    constructor(app: PIXI.Application, texture: PIXI.Texture) {
-        this.group = new PIXI.display.Group(0, true);
-        this.group.on("sort", sprite => {
-            sprite.zOrder = -sprite.y;
-        });
-        this.container = new PIXI.Container();
-
-        app.stage.addChild(this.container);
-        app.stage.addChild(new PIXI.display.Layer(this.group));
-
-        this.texture = texture;
-    }
-
-    draw(x, y) {
-        if (this.next >= this.sprites.length) {
-            const newSprite = new PIXI.extras.TilingSprite(this.texture, 32, 32);
-            newSprite.parentGroup = this.group;
-            this.container.addChild(newSprite);
-            this.sprites.push(newSprite);
-        }
-
-        const sprite = this.sprites[this.next++];
-        sprite.x = Math.floor(x);
-        sprite.y = Math.floor(y);
-        sprite.tilePosition.x = 0;
-        sprite.tilePosition.y = 0;
-        sprite.anchor.set(0.5);
-        sprite.visible = true;
-    }
-
-    flush() {
-        if (this.next === 0) {
-            return;
-        }
-
-        for (let i = this.next; i < this.sprites.length; ++i) {
-            this.sprites[i].visible = false;
-        }
-        this.next = 0;
-    }
-}
-
 export function setupPixiGame() {
     
     let type = "WebGL";
@@ -62,42 +12,57 @@ export function setupPixiGame() {
     var app = new PIXI.Application(800, 600, {backgroundColor: 0x1099bb});
     document.body.appendChild(app.view);
 
+    var texture = PIXI.Texture.fromImage('assets/guy.png');
+
     const stage = new PIXI.display.Stage();
     stage.group.enableSort = true;
     app.stage = stage;
 
-    var texture = PIXI.Texture.fromImage('assets/test.png');
+    const group = new PIXI.display.Group(0, true);
+    group.on("sort", sprite => {
+        sprite.zOrder = -sprite.y;
+    });
+    const container = new PIXI.Container();
 
-    const spritePool = new SpritePool(app, texture);
+    app.stage.addChild(container);
+    app.stage.addChild(new PIXI.display.Layer(group));
 
-    
+    const sprites: PIXI.Sprite[] = [];
 
-    const count = 200; // Math.floor(Math.random() * 500);
-    console.log(count);
-    const entities = [];
+    const count = 400;
     for (let i = 0; i < count; ++i) {
         const x = 200 + Math.random() * 400;
         const y = 100 + Math.random() * 200;
-        entities.push({x, y});
+
+        const newSprite: any = new PIXI.Sprite(texture);
+        newSprite.x = Math.floor(x);
+        newSprite.y = Math.floor(y);
+        newSprite.parentGroup = group;
+        newSprite.dx = 1.0 - Math.random() * 2.0;
+        newSprite.dy = 1.0 - Math.random() * 2.0;
+        container.addChild(newSprite);
+        app.stage.addChild(newSprite);
+        sprites.push(newSprite);
     }
-    //spritePool.flush();
     
-    let ticks = 0;
+    const lblFrames = document.createElement("span");
+    lblFrames.style.position = "absolute";
+    document.body.appendChild(lblFrames);
+
+    let frames = 0;
     setInterval(() => {
-        console.log(ticks);
-        ticks = 0;
+        lblFrames.textContent = "" + frames;
+        frames = 0;
     }, 1000);
 
     app.ticker.add(() => {
+        frames++;
 
-        ticks++;
-
-        entities[0] = app.renderer.plugins.interaction.mouse.global;
-
-        for (let i = 0; i < count; ++i) {
-            const e = entities[i];
-            spritePool.draw(e.x, e.y);
+        for (let i = 0; i < sprites.length; ++i) {
+            const sprite: any = sprites[i];
+            const n = Date.now() / 1000.0;
+            sprite.x += sprite.dx * Math.sin(n * 2);
+            sprite.y += sprite.dy * Math.cos(-n);
         }
-        spritePool.flush();
-    })
+    });
 }

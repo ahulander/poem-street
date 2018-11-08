@@ -106,8 +106,9 @@ highp float fbm ( in highp vec2 _st) {
 }
 
 void main() {
-    highp vec2 st = (uv + uScreenOffset) * 4.0;
     highp vec3 color = vec3(0.0);
+    
+    highp vec2 st = (uv + uScreenOffset) * 4.0;
 
     highp vec2 q = vec2(0.);
     q.x = fbm( st + 0.00*uTime * 2.0);

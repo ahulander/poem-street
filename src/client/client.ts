@@ -1,5 +1,6 @@
 import { setupGame } from "./game/game";
 import { setupPixiGame } from "./game/game-pixi";
+import { setupWebGLGame } from "./game/game-webgl";
 
 /*
 
@@ -9,9 +10,13 @@ import { setupPixiGame } from "./game/game-pixi";
 
 document.addEventListener("DOMContentLoaded", () => {
     const PIXI = (<any>window).PIXI_STYLE;
+    const WEBGL = (<any>window).WEBGL_STYLE;
     if  (PIXI) {
         setupPixiGame();
-    } else {
+    } else if(WEBGL) {
+        setupWebGLGame();
+    }
+    else {
         setupGame();
     }
 });

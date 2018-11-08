@@ -5,7 +5,9 @@ export module Assets {
     export enum Textures {
         Tiles = 0,
         RedTiles,
-        Test
+        Test,
+        AnimatedGuy,
+        Guy
     }
 
     const _assets: Texture[] = [];
@@ -25,5 +27,7 @@ export module Assets {
         load(Textures.Tiles, "assets/tiles.png");
         load(Textures.RedTiles, "assets/tiles_red.png");
         load(Textures.Test, "assets/test.png");
+        load(Textures.AnimatedGuy, "assets/animation.png");
+        load(Textures.Guy, "assets/guy.png");
     }    
 }

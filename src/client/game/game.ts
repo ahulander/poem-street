@@ -18,6 +18,7 @@ import { CombinePass } from "./post_fx/combine-pass";
 import { PassBlur } from "./post_fx/pass-blur";
 import { PassFog } from "./post_fx/pass-fog";
 import { FieldOfViewRenderer } from "../rendering/fov-renderer";
+import { SceneAnimatedSprite } from "./scenes/test/scene-animated-sprite";
 
 export function setupGame() {
 
@@ -52,7 +53,7 @@ export function setupGame() {
         fovMap,
         [
             CombinePass,
-            PassBlur,
+            //PassBlur,
             PassFog
         ]
      );
@@ -63,12 +64,24 @@ export function setupGame() {
         SceneSpriteTest,
         SceneSpriteStressTest,
         SceneSeizure,
-        SceneSpriteTint
+        SceneSpriteTint,
+        SceneAnimatedSprite
     );
-    sceneManager.gotoScene(SceneNames.SpriteTest);
+    sceneManager.gotoScene(SceneNames.TestAnimatedSprite);
+
+    const lblFrames = document.createElement("span");
+    lblFrames.style.position = "absolute";
+    document.body.appendChild(lblFrames);
+
+    let frames = 0;
+    setInterval(() => {
+        lblFrames.textContent = "" + frames;
+        frames = 0;
+    }, 1000);
 
     setInterval(() => {
         
+        frames++;
 
         spriteMap.clear();
         tileMap.clear();
@@ -81,6 +94,9 @@ export function setupGame() {
         
         renderPipeline.apply();
     }, 16);
+
+
+    
 
     // Dev Tool, should probably be excluded in a production build =) 
     setupSceneSelector(inputManger, sceneManager);

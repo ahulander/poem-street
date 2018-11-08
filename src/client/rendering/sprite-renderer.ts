@@ -44,7 +44,7 @@ const spriteFragmentShader = `
 
 export class SpriteRenderer {
 
-    static readonly MAX_VERTEX_COUNT = 128 * 3 * 2;
+    static readonly MAX_VERTEX_COUNT = 2048 * 3 * 2;
     position_data = new Float32Array(SpriteRenderer.MAX_VERTEX_COUNT * 2);
     uv_data = new Float32Array(SpriteRenderer.MAX_VERTEX_COUNT * 2);
     color_data = new Float32Array(SpriteRenderer.MAX_VERTEX_COUNT * 4);
