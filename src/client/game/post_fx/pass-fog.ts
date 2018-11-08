@@ -30,13 +30,18 @@ export class PassFog extends RenderPass {
         const gl = this.gl;
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, previous.texture);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, this.fovMap.texture);
 
         const now = (Date.now() - this.start) / 1000.0;
+        /*
         this.screenOffset[0] = Math.sin(now / 3);
         this.screenOffset[1] = Math.cos(now / 2);
+        */
 
         gl.useProgram(this.fogProgram.program);
         setUniform(this.fogProgram, "uSample", 0);
+        setUniform(this.fogProgram, "uFovMap", 1);
         setUniform(this.fogProgram, "uTime", now);
         setUniform(this.fogProgram, "uScreenOffset", this.screenOffset);
 
@@ -56,6 +61,7 @@ varying highp vec2 uv;
 uniform highp float uTime;
 uniform highp vec2 uScreenOffset;
 uniform sampler2D uSample;
+uniform sampler2D uFovMap;
 
 highp float random (in highp vec2 _st) {
     return fract(sin(dot(_st.xy,
@@ -125,9 +131,12 @@ void main() {
                 vec3(0.739,0.950,0.824),
                 clamp(length(r.x),0.0,1.0));
 
-    if (color.r < 0.45) {
-        color = color + texture2D(uSample, uv).rgb * color.r;
-    }
+    // color.r = color.r * (1.0 - texture2D(uFovMap, uv).a);
+    // if (color.r < 0.45) {
+    //    color = color + texture2D(uSample, uv).rgb * color.r * (texture2D(uFovMap, uv).a);
+    // }
+
+    color = mix(color, texture2D(uSample, uv).rgb, (texture2D(uFovMap, uv).a));
 
     gl_FragColor = vec4(color, 1);
 }

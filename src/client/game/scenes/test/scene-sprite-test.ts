@@ -249,6 +249,21 @@ export class SceneSpriteTest extends Scene {
         for (let i = 0; i < this.entities.length; ++i) {
             this.spriteRenderer.draw(entityToSprite(this.entities[i]));
         }
+
+        this.fovRenderer.drawCircle({
+            x: mouse.worldX, // -50 + Math.sin(Date.now() / 1000) * 32,
+            y: mouse.worldY, //  0 + Math.sin(Date.now() / 2000) * 64,
+            radius: 256
+        });
+        this.fovRenderer.drawCircle({
+            x: 100 + Math.sin((Date.now() + 1012031) / 2000) * 64,
+            y: 100 + Math.sin((Date.now() + 12318) / 1000) * 32,
+            radius: 100
+        });
+    }
+
+    lerp(from, to, a) {
+        return from * (1.0 - a) + to * a;
     }
 
     private createEntity(event: CreateEvent) {

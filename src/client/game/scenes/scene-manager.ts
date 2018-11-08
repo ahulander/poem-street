@@ -2,6 +2,7 @@ import { SceneNames } from "./scene-utility";
 import { InputManager } from "../../input/input";
 import { SpriteRenderer } from "../../rendering/sprite-renderer";
 import { Scene, SceneConstructor, setTempSceneManager } from "./scene";
+import { FieldOfViewRenderer } from "../../rendering/fov-renderer";
 
 export class SceneManager {
 
@@ -9,12 +10,14 @@ export class SceneManager {
     private currentScene: Scene;
     readonly inputManager: InputManager;
     readonly spriteRenderer: SpriteRenderer;
+    readonly fovRenderer: FieldOfViewRenderer;
     readonly gl: WebGLRenderingContext;
 
-    constructor(gl: WebGLRenderingContext, inputManager: InputManager, spriteRenderer: SpriteRenderer) {
+    constructor(gl: WebGLRenderingContext, inputManager: InputManager, spriteRenderer: SpriteRenderer, fovRenderer: FieldOfViewRenderer) {
         this.gl = gl;
         this.inputManager = inputManager;
         this.spriteRenderer = spriteRenderer;
+        this.fovRenderer = fovRenderer;
     }
 
     register(...scenes: SceneConstructor[]) {

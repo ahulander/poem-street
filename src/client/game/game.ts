@@ -17,6 +17,7 @@ import { RenderTarget } from "../rendering/render-target";
 import { CombinePass } from "./post_fx/combine-pass";
 import { PassBlur } from "./post_fx/pass-blur";
 import { PassFog } from "./post_fx/pass-fog";
+import { FieldOfViewRenderer } from "../rendering/fov-renderer";
 
 export function setupGame() {
 
@@ -40,8 +41,9 @@ export function setupGame() {
     const fovMap = new RenderTarget(gl, 800, 400);
     
     const spriteRenderer = new SpriteRenderer(gl, spriteMap);
+    const fovRenderer = new FieldOfViewRenderer(gl, fovMap);
     const inputManger = new InputManager(canvas);
-    const sceneManager = new SceneManager(gl, inputManger, spriteRenderer);
+    const sceneManager = new SceneManager(gl, inputManger, spriteRenderer, fovRenderer);
     const renderPipeline = new RenderPipeline(
         gl,
         spriteMap,

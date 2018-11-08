@@ -37,6 +37,8 @@ export class InputManager {
         target.onmousedown = this.onMouseDown.bind(this);
         target.onmouseup = this.onMouseUp.bind(this);
         target.oncontextmenu = this.preventContextMenu.bind(this);
+        target.ontouchmove = this.onMouseMove.bind(this);
+        target.ontouchend = this.onMouseMove.bind(this);
         document.body.onkeydown = this.onKeyDown.bind(this);
     }
 
