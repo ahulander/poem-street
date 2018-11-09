@@ -199,11 +199,8 @@ export class SceneSpriteTest extends Scene {
     }
 
     private lastFrame = 0;
-    private count = 0;
 
     update() {
-
-        this.count++;
 
         const now = Date.now();
         const dt = (now - this.lastFrame) / 1000.0;

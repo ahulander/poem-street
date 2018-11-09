@@ -70,20 +70,7 @@ export function setupGame() {
     );
     sceneManager.gotoScene(SceneNames.TestAnimatedSprite);
 
-    const lblFrames = document.createElement("span");
-    lblFrames.style.position = "absolute";
-    document.body.appendChild(lblFrames);
-
-    let frames = 0;
-    setFixedInterval(() => {
-        lblFrames.textContent = "" + frames;
-        frames = 0;
-    }, 1000);
-
     function tick() {
-
-        frames++;
-
         spriteMap.clear();
         tileMap.clear();
         glowMap.clear();
