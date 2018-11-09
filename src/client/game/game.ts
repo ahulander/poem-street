@@ -1,17 +1,25 @@
 import { SceneManager } from "./scenes/scene-manager";
-import { setupContex } from "./rendering/context";
-import { InputManager } from "./input/input";
+import { setupContex } from "../rendering/context";
+import { InputManager } from "../input/input";
 import { SceneNames } from "./scenes/scene-utility";
-import { SpriteRenderer } from "./rendering/sprite-renderer";
+import { SpriteRenderer } from "../rendering/sprite-renderer";
 import { SceneLogin } from "./scenes/scene-menu";
 import { SceneGame } from "./scenes/scene-game";
-import { loadTextureAssets } from "./rendering/textures";
 import { SceneSpriteTest } from "./scenes/test/scene-sprite-test";
 import { setupSceneSelector } from "../dev_tools/scene-selector";
 import { setupInfoMenu } from "../dev_tools/info-menu";
 import { SceneSpriteStressTest } from "./scenes/test/scene-sprite-stress-test";
 import { SceneSeizure } from "./scenes/test/scene-seizure";
 import { SceneSpriteTint } from "./scenes/test/scene-sprite-tint";
+import { Assets } from "../assets/assets";
+import { RenderPipeline } from "../rendering/post-fx-pipeline";
+import { RenderTarget } from "../rendering/render-target";
+import { CombinePass } from "./post_fx/combine-pass";
+import { PassBlur } from "./post_fx/pass-blur";
+import { PassFog } from "./post_fx/pass-fog";
+import { FieldOfViewRenderer } from "../rendering/fov-renderer";
+import { SceneAnimatedSprite } from "./scenes/test/scene-animated-sprite";
+import { setFixedInterval } from "../../common/utility";
 
 export function setupGame() {
 
@@ -22,14 +30,34 @@ export function setupGame() {
         return;
     }
 
-    if (!setupContex(canvas)) {
+    const gl = setupContex(canvas);
+    if (!gl) {
         return;
     }
     
-    loadTextureAssets();
-    const spriteRenderer = new SpriteRenderer();
+    Assets.loadAssets(gl);
+
+    const spriteMap = new RenderTarget(gl, 800, 400);
+    const tileMap = new RenderTarget(gl, 800, 400);
+    const glowMap = new RenderTarget(gl, 800, 400);
+    const fovMap = new RenderTarget(gl, 800, 400);
+    
+    const spriteRenderer = new SpriteRenderer(gl, spriteMap);
+    const fovRenderer = new FieldOfViewRenderer(gl, fovMap);
     const inputManger = new InputManager(canvas);
-    const sceneManager = new SceneManager(inputManger, spriteRenderer);
+    const sceneManager = new SceneManager(gl, inputManger, spriteRenderer, fovRenderer);
+    const renderPipeline = new RenderPipeline(
+        gl,
+        spriteMap,
+        tileMap,
+        glowMap,
+        fovMap,
+        [
+            CombinePass,
+            //PassBlur,
+            PassFog
+        ]
+     );
 
     sceneManager.register(
         SceneLogin,
@@ -37,13 +65,37 @@ export function setupGame() {
         SceneSpriteTest,
         SceneSpriteStressTest,
         SceneSeizure,
-        SceneSpriteTint
+        SceneSpriteTint,
+        SceneAnimatedSprite
     );
-    sceneManager.gotoScene(SceneNames.SpriteTest);
+    sceneManager.gotoScene(SceneNames.TestAnimatedSprite);
 
-    setInterval(() => {
+    const lblFrames = document.createElement("span");
+    lblFrames.style.position = "absolute";
+    document.body.appendChild(lblFrames);
+
+    let frames = 0;
+    setFixedInterval(() => {
+        lblFrames.textContent = "" + frames;
+        frames = 0;
+    }, 1000);
+
+    function tick() {
+
+        frames++;
+
+        spriteMap.clear();
+        tileMap.clear();
+        glowMap.clear();
+        fovMap.clear();
+        
         sceneManager.update();
-    }, 16);
+
+        spriteRenderer.flush();
+        
+        renderPipeline.apply();
+    }
+    setFixedInterval(tick, 16);   
 
     // Dev Tool, should probably be excluded in a production build =) 
     setupSceneSelector(inputManger, sceneManager);

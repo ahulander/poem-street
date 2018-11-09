@@ -1,48 +1,9 @@
-import { ProgramInfo, createProgram } from "./shader";
-import { getContext } from "./context";
-import { getTexture, AssetImage, TextureNames } from "./textures";
+import { ProgramInfo, createProgram, enableVertexAttribute, setUniform } from "./shader";
+import { Texture } from "./textures";
 import { getMainCameraMatrices } from "./camera";
-
-export interface Sprite {
-
-    /*
-        World position
-    */
-    x: number;
-    y: number;
-    
-    /*
-        Sprite draw order.
-        Higher values are rendered ontop of lower values.
-
-        Defaults to 0
-    */
-    layer?: number;
-    
-    /*
-        Center of the sprite.
-        {0, 0} -> top left corner of the sprite
-        {1, 1} -> bottom right corner
-
-        Defaults to { 0.5, 0.5 }
-    */
-    originX?: number;
-    originY?: number;
-    width: number;
-    height: number;
-
-    /*
-        Four texture coorinates of the sprite.
-        Coordinates are given in pixels
-        [0] -> left
-        [1] -> top
-        [2] -> right
-        [4] -> bottom
-    */
-    textureRect: number[];
-    textureName: TextureNames;
-    tint?: number[]; 
-}
+import { Assets } from "../assets/assets";
+import { Sprite } from "./sprite";
+import { RenderTarget } from "./render-target";
 
 const spriteVertexShader = `
     attribute vec3 aVertexPosition;
@@ -83,7 +44,7 @@ const spriteFragmentShader = `
 
 export class SpriteRenderer {
 
-    static readonly MAX_VERTEX_COUNT = 128 * 3 * 2;
+    static readonly MAX_VERTEX_COUNT = 2048 * 3 * 2;
     position_data = new Float32Array(SpriteRenderer.MAX_VERTEX_COUNT * 2);
     uv_data = new Float32Array(SpriteRenderer.MAX_VERTEX_COUNT * 2);
     color_data = new Float32Array(SpriteRenderer.MAX_VERTEX_COUNT * 4);
@@ -93,14 +54,17 @@ export class SpriteRenderer {
     colors: WebGLBuffer;
     programInfo: ProgramInfo;
 
-    textureName: TextureNames;
-    texture: AssetImage;
+    textureName: Assets.Textures;
+    texture: Texture;
+    private gl: WebGLRenderingContext;
+    private spriteMap: RenderTarget;
 
-    constructor() {
+    constructor(gl: WebGLRenderingContext, spriteMap: RenderTarget) {
 
-        const gl = getContext();
+        this.gl = gl;
+        this.spriteMap = spriteMap;
 
-        this.programInfo = createProgram(spriteVertexShader, spriteFragmentShader);
+        this.programInfo = createProgram(gl, spriteVertexShader, spriteFragmentShader);
 
         this.positions = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.positions);
@@ -121,52 +85,30 @@ export class SpriteRenderer {
             return;
         }
 
-        const gl = getContext();
+        this.spriteMap.use();
+
+        const gl = this.gl;
         const camera = getMainCameraMatrices();
 
+        gl.useProgram(this.programInfo.program);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture.texture);
 
-        gl.useProgram(this.programInfo.program);
-        gl.uniformMatrix4fv(this.programInfo.uniformLocations.uViewMatrix, false, camera.view);
-        gl.uniformMatrix4fv(this.programInfo.uniformLocations.uProjectionMatrix, false, camera.projection);
-        gl.uniform1i(this.programInfo.uniformLocations.uSpriteAtlas, 0);
-
+        setUniform(this.programInfo, "uViewMatrix", camera.view);
+        setUniform(this.programInfo, "uProjectionMatrix", camera.projection);
+        setUniform(this.programInfo, "uSpriteAtlas", 0);
+        
         gl.bindBuffer(gl.ARRAY_BUFFER, this.positions);
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.position_data);
-        gl.vertexAttribPointer(
-            this.programInfo.attributeLocations.aVertexPosition,
-            3,
-            gl.FLOAT,
-            false,
-            0,
-            0
-        );
-        gl.enableVertexAttribArray(this.programInfo.attributeLocations.aVertexPosition);
+        enableVertexAttribute(gl, this.programInfo, "aVertexPosition");
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.uvs);
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.uv_data);
-        gl.vertexAttribPointer(
-            this.programInfo.attributeLocations.aUvPosition,
-            2,
-            gl.FLOAT,
-            false,
-            0,
-            0
-        );
-        gl.enableVertexAttribArray(this.programInfo.attributeLocations.aUvPosition);
+        enableVertexAttribute(gl, this.programInfo, "aUvPosition");
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.colors);
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.color_data);
-        gl.vertexAttribPointer(
-            this.programInfo.attributeLocations.aTint,
-            4,
-            gl.FLOAT,
-            false,
-            0,
-            0
-        );
-        gl.enableVertexAttribArray(this.programInfo.attributeLocations.aTint);
+        enableVertexAttribute(gl, this.programInfo, "aTint");
 
         gl.drawArrays(gl.TRIANGLES, 0, this.vertexCount);
 
@@ -181,7 +123,7 @@ export class SpriteRenderer {
             this.flush();
         }
         
-        this.texture = getTexture(sprite.textureName);
+        this.texture = Assets.getTexture(sprite.textureName);
         this.textureName = sprite.textureName;
         
     

@@ -1,36 +1,11 @@
-import { getContext } from "./context";
 
-export enum TextureNames {
-    Tiles = 0,
-    RedTiles,
-    Test
-}
-
-export interface AssetImage {
+export interface Texture {
     texture: WebGLTexture;
     width: number;
     height: number;
 }
 
-const _textures: AssetImage[] = [];
-
-export function getTexture(name) {
-    return _textures[name];
-}
-
-export function loadTextureAssets() {
-    load(TextureNames.Tiles, "/assets/tiles.png");
-    load(TextureNames.RedTiles, "/assets/tiles_red.png");
-    load(TextureNames.Test, "assets/test.png");
-}
-
-function load(name: TextureNames, url: string) {
-    _textures[name] = loadImage(url);
-}
-
-function loadImage(url) {
-
-    const gl = getContext();
+export function loadImage(gl: WebGLRenderingContext, url) {
 
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -43,7 +18,7 @@ function loadImage(url) {
     const border = 0;
     const srcFormat = gl.RGBA;
     const srcType = gl.UNSIGNED_BYTE;
-    const pixel = new Uint8Array([255, 158, 243, 255]);  // opaque blue
+    const pixel = new Uint8Array([255, 158, 243, 255]);
     gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
                     width, height, border, srcFormat, srcType,
                     pixel);

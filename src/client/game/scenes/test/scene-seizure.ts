@@ -1,12 +1,13 @@
-import { Scene } from "../scene-manager";
+import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
-import { TextureNames } from "../../rendering/textures";
+import { Assets } from "../../../assets/assets";
+import { setFixedInterval, FixedTimeout, clearFixedInterval } from "../../../../common/utility";
 
 export class SceneSeizure extends Scene {
     
     private seziueEnabled = false;
 
-    private trailUpdateInterval: NodeJS.Timeout;
+    private trailUpdateInterval: FixedTimeout;
     private trail: {x: number, y: number}[] = [];
 
     constructor() {
@@ -18,7 +19,7 @@ export class SceneSeizure extends Scene {
             this.seziueEnabled = !this.seziueEnabled;
         }
 
-        this.trailUpdateInterval = setInterval(() => {
+        this.trailUpdateInterval = setFixedInterval(() => {
             if (this.trail.length > 10) {
                 this.trail.splice(0, 1);
             }
@@ -34,11 +35,13 @@ export class SceneSeizure extends Scene {
     }
 
     goodbye() {
-        clearInterval(this.trailUpdateInterval);
+        clearFixedInterval(this.trailUpdateInterval);
     }
 
     update() {
         
+        this.fovRenderer.clear();
+
         if (this.seziueEnabled) {
             const count = Math.floor(Math.random() * 5000);
             for (let i = 0; i < count; ++i) {
@@ -53,7 +56,8 @@ export class SceneSeizure extends Scene {
                         u, v,
                         u + 32, v + 32
                     ],
-                    textureName: Math.random() > 0.5 ? TextureNames.Tiles : TextureNames.RedTiles,
+                    // This is like worst case possible
+                    textureName: Math.random() > 0.5 ? Assets.Textures.Tiles : Assets.Textures.RedTiles,
                     layer: -10
                 });
             }
@@ -70,7 +74,7 @@ export class SceneSeizure extends Scene {
                     0, 0,
                     32, 32
                 ],
-                textureName: TextureNames.Tiles
+                textureName: Assets.Textures.Tiles
             });
         }
     }
