@@ -85,6 +85,14 @@ export class SceneGame extends Scene {
                 32,32
             ]
         });
+
+        if (unit.userId === CWS.getUserId()) {
+            this.fovRenderer.drawCircle({
+                radius: 200,
+                x: unit.position.x,
+                y: unit.position.y
+            });
+        }
     }
 
     private receivedUnit(message: SMUnit) {
