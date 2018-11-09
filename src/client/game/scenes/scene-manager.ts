@@ -15,6 +15,9 @@ export class SceneManager {
     readonly gl: WebGLRenderingContext;
     readonly ui: UI;
 
+    // TODO (Alex): Add support for multiple listeners
+    private onSceneChanged: () => void;
+
     constructor(
         gl: WebGLRenderingContext,
         ui: UI,
@@ -27,6 +30,16 @@ export class SceneManager {
         this.inputManager = inputManager;
         this.spriteRenderer = spriteRenderer;
         this.fovRenderer = fovRenderer;
+    }
+
+    on(event: "scenechanged", callback: () => void) {
+        // TODO: (Alex): Add support for different events
+        if (this.onSceneChanged) {
+            console.warn("Multiple event listeners not supported at the moment! Please fix : )");
+            return;
+        }
+
+        this.onSceneChanged = callback;
     }
 
     register(...scenes: SceneConstructor[]) {
@@ -59,6 +72,10 @@ export class SceneManager {
             }
             this.currentScene = nextScene;
             this.currentScene.hello();
+
+            if (this.onSceneChanged) {
+                this.onSceneChanged();
+            }
         });
     }
 

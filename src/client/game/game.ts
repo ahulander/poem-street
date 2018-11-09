@@ -88,5 +88,5 @@ export function setupGame() {
 
     // Dev Tool, should probably be excluded in a production build =) 
     setupSceneSelector(ui, inputManger, sceneManager);
-    setupInfoMenu(ui, inputManger);
+    setupInfoMenu(ui, inputManger, sceneManager);
 }

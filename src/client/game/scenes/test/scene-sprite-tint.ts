@@ -37,6 +37,10 @@ export class SceneSpriteTint extends Scene {
             this.color[2] = b / 255;
         });
         document.body.appendChild(this.colorPicker);
+
+        this.inputManager.registerKeyboardShortcut("Space", () => {
+            console.log("S P A C E");
+        }, "Space!");
     }
 
     goodbye() {

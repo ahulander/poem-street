@@ -23,7 +23,7 @@ export class UIInfo extends UIElement {
         this.inputManager = inputManager;
 
         this.root = (
-            <Draggable title="Open Scene" onDismiss={onDismiss}>
+            <Draggable title="Poem Street - Info" onDismiss={onDismiss}>
                 <table style={styleTable}>
                     <thead>
                         <tr>
@@ -38,7 +38,7 @@ export class UIInfo extends UIElement {
         )
     }
 
-    enabled() {
+    refresh() {
         while (this.tbody.firstChild) {
             this.tbody.removeChild(this.tbody.firstChild);
         }
@@ -52,5 +52,9 @@ export class UIInfo extends UIElement {
                 </tr>
             );
         });
+    }
+
+    enabled() {
+        this.refresh();
     }
 }
