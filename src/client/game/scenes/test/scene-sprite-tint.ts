@@ -1,6 +1,7 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { Assets } from "../../../assets/assets";
+import { UIColorPicker } from "../../../rendering/ui/components/dev/color-picker";
 
 function createColorPicker(onchange) {
     const result = document.createElement("div");
@@ -20,23 +21,18 @@ export class SceneSpriteTint extends Scene {
 
     private color: number[] = [1,0,0,1];
 
+    private uiColorPicker: UIColorPicker;
+
     constructor() {
         super(SceneNames.TestSpriteTint);
+
+        this.uiColorPicker = new UIColorPicker(color => {
+            this.color = color;
+        });
     }
 
     hello() {
-        // Setup color picker
-        this.colorPicker = createColorPicker(event => {
-            const hexColor = <string>event.target.value;
-            const r = parseInt(hexColor.substr(1, 2), 16);
-            const g = parseInt(hexColor.substr(3, 2), 16);
-            const b = parseInt(hexColor.substr(5, 2), 16);
-
-            this.color[0] = r / 255;
-            this.color[1] = g / 255;
-            this.color[2] = b / 255;
-        });
-        document.body.appendChild(this.colorPicker);
+        this.ui.add(this.uiColorPicker);
 
         this.inputManager.registerKeyboardShortcut("Space", () => {
             console.log("S P A C E");
@@ -44,9 +40,7 @@ export class SceneSpriteTint extends Scene {
     }
 
     goodbye() {
-        // Remove color picker
-        this.colorPicker.remove();
-        this.colorPicker = null;
+        this.ui.remove(this.uiColorPicker);
     }
 
     update() {

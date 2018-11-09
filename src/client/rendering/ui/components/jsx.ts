@@ -36,12 +36,17 @@ var JSX = {
         }
 
         children.forEach(child => {
-            if (typeof(child) === "string") {
+            if (!child) {
+                // Skip
+            }
+            else if (typeof(child) === "string") {
                 result.appendChild(document.createTextNode(child));
             }
             else if (Array.isArray(child)) {
                 child.forEach(c => {
-                    result.appendChild(c);
+                    if (c) {
+                        result.appendChild(c);
+                    }
                 });
             }
             else {

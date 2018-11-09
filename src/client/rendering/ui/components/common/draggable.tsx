@@ -2,7 +2,7 @@
 export interface JSXAttributes {
     title: string;
     children?: any[];
-    onDismiss: (event: Event) => void;
+    onDismiss?: (event: Event) => void;
 }
 
 const styleDraggable = {
@@ -38,7 +38,7 @@ export function Draggable({title, onDismiss, children}: JSXAttributes) {
         <div className="draggable" style={styleDraggable} onMouseDown={onStartDrag}>
             <h3 className="draggable__header">
                 <span>{title}</span>
-                <button className="draggable__btn-dismiss" onClick={onDismiss}>&times;</button>
+                { onDismiss ? <button className="draggable__btn-dismiss" onClick={onDismiss}>&times;</button> : null }
             </h3>
             <div>
                 {children}
