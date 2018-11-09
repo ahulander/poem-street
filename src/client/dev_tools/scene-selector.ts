@@ -36,7 +36,7 @@ function createSceneSelectorElement(sceneManager: SceneManager) {
     content.appendChild(body);
 
     const excludedScenes = [ SceneNames.Game ];
-    const scenes = Object.keys(SceneNames).map(n => SceneNames[n]).filter(a => !excludedScenes.find(b => a === b));
+    const scenes: SceneNames[] = <any>Object.keys(sceneManager.scenes).filter(a => !excludedScenes.find(b => a === b));
     
     scenes.forEach(name => {
         const button = document.createElement("button");

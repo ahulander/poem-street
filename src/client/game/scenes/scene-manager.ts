@@ -6,7 +6,7 @@ import { FieldOfViewRenderer } from "../../rendering/fov-renderer";
 
 export class SceneManager {
 
-    private scenes: { [name: string]: Scene} = {};
+    readonly scenes: { [name: string]: Scene} = {};
     private currentScene: Scene;
     readonly inputManager: InputManager;
     readonly spriteRenderer: SpriteRenderer;
