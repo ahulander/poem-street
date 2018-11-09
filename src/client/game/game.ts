@@ -20,6 +20,7 @@ import { PassFog } from "./post_fx/pass-fog";
 import { FieldOfViewRenderer } from "../rendering/fov-renderer";
 import { SceneAnimatedSprite } from "./scenes/test/scene-animated-sprite";
 import { setFixedInterval } from "../../common/utility";
+import { UI } from "../rendering/ui/ui";
 
 export function setupGame() {
 
@@ -42,10 +43,11 @@ export function setupGame() {
     const glowMap = new RenderTarget(gl, 800, 400);
     const fovMap = new RenderTarget(gl, 800, 400);
     
+    const ui = new UI(document.getElementById("ui_root"));
     const spriteRenderer = new SpriteRenderer(gl, spriteMap);
     const fovRenderer = new FieldOfViewRenderer(gl, fovMap);
     const inputManger = new InputManager(canvas);
-    const sceneManager = new SceneManager(gl, inputManger, spriteRenderer, fovRenderer);
+    const sceneManager = new SceneManager(gl, ui, inputManger, spriteRenderer, fovRenderer);
     const renderPipeline = new RenderPipeline(
         gl,
         spriteMap,
@@ -57,7 +59,7 @@ export function setupGame() {
             //PassBlur,
             PassFog
         ]
-     );
+    );
 
     sceneManager.register(
         SceneLogin,
@@ -85,6 +87,6 @@ export function setupGame() {
     setFixedInterval(tick, 16);   
 
     // Dev Tool, should probably be excluded in a production build =) 
-    setupSceneSelector(inputManger, sceneManager);
-    setupInfoMenu(inputManger);
+    setupSceneSelector(ui, inputManger, sceneManager);
+    setupInfoMenu(ui, inputManger);
 }

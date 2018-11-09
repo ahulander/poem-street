@@ -3,82 +3,16 @@
   <head>
     <title>Poem Street</title>
     <meta charset="UTF-8">
-
-    <style>
-      
-      html, body {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        width: 100%;
-      }
-
-      #login, #content {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        display: flex;
-      }
-
-      .login__content {
-        background-color: hotpink;
-        padding: 1em;
-        display: inline-block;
-        margin: auto;
-      }
-
-      #content>canvas {
-        margin: auto;
-      }
-
-      .login__header {
-        color: white;
-        margin: 0;
-        margin-bottom: 0.5em;
-      }
-
-      #login.hidden {
-        display: none;
-      }
-
-      .scene-selector {
-        position: absolute;
-        margin: 5em;
-        border: 1px solid;
-        padding: 1em;
-        box-shadow: black -5px 5px 0px;
-        background-color: aliceblue;
-      }
-
-      .scene-selector.hidden {
-        display: none;
-      }
-
-      .scene-selector__header {
-        margin: 0;
-      }
-
-      .scene-selector__body {
-        margin-top: 1em;
-      }
-
-    </style>
-
+    <link href="index.css" rel="stylesheet">
   </head>
   <body>
+    
     <script src="vendors~main.js"></script>
     <script src="main.js"></script>
 
     <div id="content">
       <canvas id="canvas" width="800" height="400"></canvas>
+      <div id="ui_root"></div>
     </div> 
-    <form id="login" class="hidden">
-      <div class="login__content">
-        <h1 class="login__header">Poem Street</h1>
-        <input type="text" id="input_username"/>
-        <input type="password" id="input_password"/>
-        <button id="btn_login">Login</button>
-      </div>
-    </form>
   </body>
 </html>

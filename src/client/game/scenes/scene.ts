@@ -3,6 +3,7 @@ import { SceneNames } from "./scene-utility";
 import { InputManager } from "../../input/input";
 import { SpriteRenderer } from "../../rendering/sprite-renderer";
 import { FieldOfViewRenderer } from "../../rendering/fov-renderer";
+import { UI } from "../../rendering/ui/ui";
 
 var _tempSceneManager: SceneManager;
 
@@ -26,6 +27,7 @@ export class Scene {
 
     readonly key: SceneNames;
     private sceneManager: SceneManager;
+    readonly ui: UI;
     readonly gl: WebGLRenderingContext;
     readonly inputManager: InputManager;
     readonly spriteRenderer: SpriteRenderer;
@@ -35,6 +37,7 @@ export class Scene {
 
     constructor(key: SceneNames) {
         this.key = key;
+        this.ui = _tempSceneManager.ui;
         this.gl = _tempSceneManager.gl;
         this.sceneManager = _tempSceneManager;
         this.inputManager = _tempSceneManager.inputManager;
