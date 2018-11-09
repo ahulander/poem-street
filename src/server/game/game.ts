@@ -4,6 +4,7 @@ import { setupMessageHandlers } from "./message-handlers";
 import { UnitData, tick } from "../../common/entities/unit";
 import { vec2 } from "../../common/math/vector2";
 import { WSServerMessageTypes } from '../../common/api/ws-messages';
+import { setFixedInterval } from '../../common/utility';
 
 export enum EventTypes {
     CreateUnit = 0,
@@ -55,7 +56,7 @@ export class Game {
     }
 
     run() {
-        setInterval(this.tick.bind(this), 1000);
+        setFixedInterval(this.tick.bind(this), 1000);
     }
 
     private moveUnit(event: EventMoveUnit) {

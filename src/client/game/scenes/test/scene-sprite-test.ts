@@ -5,6 +5,7 @@ import { vec2 } from "../../../../common/math/vector2";
 import { MouseState } from "../../../input/input";
 import { Assets } from "../../../assets/assets";
 import { Sprite } from "../../../rendering/sprite";
+import { setFixedInterval, FixedTimeout, clearFixedInterval } from "../../../../common/utility";
 
 enum GameEventType {
     CreateHuman = 0,
@@ -127,7 +128,7 @@ export class SceneSpriteTest extends Scene {
     private entities: Entity[] = [];
     private eventQueue: EventQueue;
     private nextEntityId: number = 0;
-    private randomizeTargetInterval;
+    private randomizeTargetInterval: FixedTimeout;
 
     constructor() {
         super(SceneNames.SpriteTest);
@@ -183,7 +184,7 @@ export class SceneSpriteTest extends Scene {
             });
         }
 
-        this.randomizeTargetInterval = setInterval(() => {
+        this.randomizeTargetInterval = setFixedInterval(() => {
             this.entities.forEach(e => {
                 e.target = {
                     x: -300 + Math.floor(Math.random() * 600),
@@ -191,15 +192,10 @@ export class SceneSpriteTest extends Scene {
                 };
             })
         }, 10000);
-
-        setInterval(() => {
-            // console.log(this.count);
-            this.count = 0;
-        }, 1000);
     }
 
     goodbye() {
-        clearInterval(this.randomizeTargetInterval);
+        clearFixedInterval(this.randomizeTargetInterval);
     }
 
     private lastFrame = 0;

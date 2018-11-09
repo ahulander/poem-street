@@ -19,6 +19,7 @@ import { PassBlur } from "./post_fx/pass-blur";
 import { PassFog } from "./post_fx/pass-fog";
 import { FieldOfViewRenderer } from "../rendering/fov-renderer";
 import { SceneAnimatedSprite } from "./scenes/test/scene-animated-sprite";
+import { setFixedInterval } from "../../common/utility";
 
 export function setupGame() {
 
@@ -74,13 +75,13 @@ export function setupGame() {
     document.body.appendChild(lblFrames);
 
     let frames = 0;
-    setInterval(() => {
+    setFixedInterval(() => {
         lblFrames.textContent = "" + frames;
         frames = 0;
     }, 1000);
 
-    setInterval(() => {
-        
+    function tick() {
+
         frames++;
 
         spriteMap.clear();
@@ -93,10 +94,8 @@ export function setupGame() {
         spriteRenderer.flush();
         
         renderPipeline.apply();
-    }, 16);
-
-
-    
+    }
+    setFixedInterval(tick, 16);   
 
     // Dev Tool, should probably be excluded in a production build =) 
     setupSceneSelector(inputManger, sceneManager);

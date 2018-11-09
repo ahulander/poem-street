@@ -9,6 +9,7 @@ import { FieldOfViewRenderer } from "../rendering/fov-renderer";
 import { InputManager } from "../input/input";
 import { PassBlur } from "./post_fx/pass-blur";
 import { PassFog } from "./post_fx/pass-fog";
+import { setFixedInterval } from "../../common/utility";
 
 
 export function setupWebGLGame() {
@@ -71,12 +72,12 @@ export function setupWebGLGame() {
     document.body.appendChild(lblFrames);
 
     let frames = 0;
-    setInterval(() => {
+    setFixedInterval(() => {
         lblFrames.textContent = "" + frames;
         frames = 0;
     }, 1000);
 
-    setInterval(() => {
+    setFixedInterval(() => {
         
         frames++;
 

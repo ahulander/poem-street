@@ -1,10 +1,11 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { Assets } from "../../../assets/assets";
+import { setFixedInterval, FixedTimeout, clearFixedInterval } from "../../../../common/utility";
 
 export class SceneSpriteStressTest extends Scene {
 
-    private interval: NodeJS.Timeout;
+    private interval: FixedTimeout;
     private frameCount = 0;
 
     constructor() {
@@ -12,7 +13,7 @@ export class SceneSpriteStressTest extends Scene {
     }
 
     hello() {
-        this. interval = setInterval(() => {
+        this. interval = setFixedInterval(() => {
             console.log(this.frameCount);
             this.frameCount = 0;
         }, 1000);
@@ -21,7 +22,7 @@ export class SceneSpriteStressTest extends Scene {
     }
 
     goodbye() {
-        clearInterval(this.interval);
+        clearFixedInterval(this.interval);
     }
 
     update () {

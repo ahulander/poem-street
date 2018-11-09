@@ -1,12 +1,13 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { Assets } from "../../../assets/assets";
+import { setFixedInterval, FixedTimeout, clearFixedInterval } from "../../../../common/utility";
 
 export class SceneSeizure extends Scene {
     
     private seziueEnabled = false;
 
-    private trailUpdateInterval: NodeJS.Timeout;
+    private trailUpdateInterval: FixedTimeout;
     private trail: {x: number, y: number}[] = [];
 
     constructor() {
@@ -18,7 +19,7 @@ export class SceneSeizure extends Scene {
             this.seziueEnabled = !this.seziueEnabled;
         }
 
-        this.trailUpdateInterval = setInterval(() => {
+        this.trailUpdateInterval = setFixedInterval(() => {
             if (this.trail.length > 10) {
                 this.trail.splice(0, 1);
             }
@@ -34,7 +35,7 @@ export class SceneSeizure extends Scene {
     }
 
     goodbye() {
-        clearInterval(this.trailUpdateInterval);
+        clearFixedInterval(this.trailUpdateInterval);
     }
 
     update() {
@@ -55,6 +56,7 @@ export class SceneSeizure extends Scene {
                         u, v,
                         u + 32, v + 32
                     ],
+                    // This is like worst case possible
                     textureName: Math.random() > 0.5 ? Assets.Textures.Tiles : Assets.Textures.RedTiles,
                     layer: -10
                 });

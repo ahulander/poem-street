@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import "pixi-layers";
+import { setFixedInterval } from "../../common/utility";
 
 export function setupPixiGame() {
     
@@ -50,7 +51,7 @@ export function setupPixiGame() {
     document.body.appendChild(lblFrames);
 
     let frames = 0;
-    setInterval(() => {
+    setFixedInterval(() => {
         lblFrames.textContent = "" + frames;
         frames = 0;
     }, 1000);
