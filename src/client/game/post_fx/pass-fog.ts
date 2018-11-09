@@ -3,11 +3,13 @@ import { RenderTarget } from "../../rendering/render-target";
 import { ProgramInfo, createProgram, setUniform } from "../../rendering/shader";
 import { FullscreenQuad } from "../../rendering/fullscreen-quad";
 import { vec2 } from "gl-matrix";
+import { getMainCameraMatrices } from "../../rendering/camera";
 
 
 export class PassFog extends RenderPass {
     
     private result: RenderTarget;
+    private backgroundProgram: ProgramInfo;
     private fogProgram: ProgramInfo;
     private readonly start: number;
     private screenOffset: vec2;
@@ -17,6 +19,7 @@ export class PassFog extends RenderPass {
         
         this.start = Date.now();
         this.result = new RenderTarget(this.gl, 800, 400);
+        this.backgroundProgram = createProgram(this.gl, FullscreenQuad.defaultFullscreenVertexSource, fragmentBackground);
         this.fogProgram = createProgram(this.gl, FullscreenQuad.defaultFullscreenVertexSource, fragment);
 
         this.screenOffset = vec2.create();
@@ -24,32 +27,57 @@ export class PassFog extends RenderPass {
         this.screenOffset[1] = 0;
     }
 
-    apply(previous: RenderTarget): RenderTarget {
-        this.result.clear();
-        
-        const gl = this.gl;
+    private drawBackground(gl: WebGLRenderingContext, previous: RenderTarget) {
+        gl.useProgram(this.backgroundProgram.program);
+
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, previous.texture);
-        gl.activeTexture(gl.TEXTURE1);
+        setUniform(this.backgroundProgram, "uSample", 0);
+
+        this.fullscreenQuad.draw(this.backgroundProgram);
+    }
+
+    private drawFog(gl: WebGLRenderingContext) {
+        
+        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        
+        gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.fovMap.texture);
 
         const now = (Date.now() - this.start) / 1000.0;
-        /*
-        this.screenOffset[0] = Math.sin(now / 3);
-        this.screenOffset[1] = Math.cos(now / 2);
-        */
+        
+        const camera = getMainCameraMatrices();
+        this.screenOffset[0] = camera.camera.x;
+        this.screenOffset[1] = camera.camera.y;        
 
         gl.useProgram(this.fogProgram.program);
-        setUniform(this.fogProgram, "uSample", 0);
-        setUniform(this.fogProgram, "uFovMap", 1);
+        setUniform(this.fogProgram, "uFovMap", 0);
         setUniform(this.fogProgram, "uTime", now);
         setUniform(this.fogProgram, "uScreenOffset", this.screenOffset);
 
         this.fullscreenQuad.draw(this.fogProgram);
+    }
 
+    apply(previous: RenderTarget): RenderTarget {
+        this.result.clear();
+        
+        const gl = this.gl;
+        this.drawBackground(gl, previous);
+        this.drawFog(gl);
+        
         return this.result;
     }
 }
+
+const fragmentBackground = `
+varying highp vec2 uv;
+
+uniform sampler2D uSample;
+
+void main() {
+    gl_FragColor = texture2D(uSample, uv);
+}
+`;
 
 const fragment = `
 // Author @patriciogv - 2015
@@ -60,7 +88,6 @@ varying highp vec2 uv;
 
 uniform highp float uTime;
 uniform highp vec2 uScreenOffset;
-uniform sampler2D uSample;
 uniform sampler2D uFovMap;
 
 highp float random (in highp vec2 _st) {
@@ -132,16 +159,13 @@ void main() {
                 vec3(0.739,0.950,0.824),
                 clamp(length(r.x),0.0,1.0));
 
-    // color.r = color.r * (1.0 - texture2D(uFovMap, uv).a);
-    // if (color.r < 0.45) {
-    //    color = color + texture2D(uSample, uv).rgb * color.r * (texture2D(uFovMap, uv).a);
-    // }
-
     // Hack: ?
     highp vec2 fogUv = uv;
     fogUv.y = 1.0 - fogUv.y;
-    color = mix(color, texture2D(uSample, uv).rgb, (texture2D(uFovMap, fogUv).a));
+    
+    highp float a = texture2D(uFovMap, fogUv).a;
+    a = min(color.r * a * 2.0, 1.0);
 
-    gl_FragColor = vec4(color, 1);
+    gl_FragColor = vec4(color, 1.0 - a * a);
 }
 `;
