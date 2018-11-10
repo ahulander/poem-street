@@ -68,8 +68,6 @@ export class UnitManager {
         if (!userUnits.find(u => u.id === unit.id)) {
             userUnits.push(unit);
         }
-
-        console.log(this.unitByIds);
     }
 
     private deleteFromUnitCache(unit: UnitData) {

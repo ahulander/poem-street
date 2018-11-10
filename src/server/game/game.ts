@@ -43,8 +43,7 @@ export class Game {
 
     private eventQueue: EventQueue;
 
-    private nextUnitId: number = 0;
-    private units: UnitData[] = [];
+    private units: UnitManager = new UnitManager();
 
     private gameWorld_: GameWorld;
 
