@@ -1,0 +1,49 @@
+
+/*
+    TODO (Alex): Start using less or something if we end up writing a lot of css : )
+
+*/
+
+#content {
+    position: relative;
+}
+
+#ui_root {
+    position: absolute;
+    top: 0;
+}
+
+.draggable {
+    user-select: none;
+    border: 1px solid black;
+    background-color: white;
+    box-shadow: black -3px 3px 0px;
+}
+
+.draggable__header {
+    margin: 0;
+    border-bottom: 1px solid black;
+    background-color: #ff69b499;
+    color: white;
+    padding: 5px;
+}
+
+.draggable__btn-dismiss {
+    float: right;
+    background-color: white;
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 20px;
+    border: none;
+    color: hotpink;
+    cursor: pointer;
+}
+
+.draggable__btn-dismiss:hover {
+    background-color: hotpink;
+    color: white;
+}
+
+.draggable__btn-dismiss:focus {
+    outline: none;
+}

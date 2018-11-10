@@ -3,21 +3,43 @@ import { InputManager } from "../../input/input";
 import { SpriteRenderer } from "../../rendering/sprite-renderer";
 import { Scene, SceneConstructor, setTempSceneManager } from "./scene";
 import { FieldOfViewRenderer } from "../../rendering/fov-renderer";
+import { UI } from "../../rendering/ui/ui";
 
 export class SceneManager {
 
-    private scenes: { [name: string]: Scene} = {};
+    readonly scenes: { [name: string]: Scene} = {};
     private currentScene: Scene;
     readonly inputManager: InputManager;
     readonly spriteRenderer: SpriteRenderer;
     readonly fovRenderer: FieldOfViewRenderer;
     readonly gl: WebGLRenderingContext;
+    readonly ui: UI;
 
-    constructor(gl: WebGLRenderingContext, inputManager: InputManager, spriteRenderer: SpriteRenderer, fovRenderer: FieldOfViewRenderer) {
+    // TODO (Alex): Add support for multiple listeners
+    private onSceneChanged: () => void;
+
+    constructor(
+        gl: WebGLRenderingContext,
+        ui: UI,
+        inputManager: InputManager,
+        spriteRenderer: SpriteRenderer,
+        fovRenderer: FieldOfViewRenderer
+    ) {
         this.gl = gl;
+        this.ui = ui;
         this.inputManager = inputManager;
         this.spriteRenderer = spriteRenderer;
         this.fovRenderer = fovRenderer;
+    }
+
+    on(event: "scenechanged", callback: () => void) {
+        // TODO: (Alex): Add support for different events
+        if (this.onSceneChanged) {
+            console.warn("Multiple event listeners not supported at the moment! Please fix : )");
+            return;
+        }
+
+        this.onSceneChanged = callback;
     }
 
     register(...scenes: SceneConstructor[]) {
@@ -50,12 +72,15 @@ export class SceneManager {
             }
             this.currentScene = nextScene;
             this.currentScene.hello();
+
+            if (this.onSceneChanged) {
+                this.onSceneChanged();
+            }
         });
     }
 
     update() {
         if (this.currentScene) {
-            this.currentScene.dt = 1.0 / 60.0;
             this.currentScene.update();
         }
     }

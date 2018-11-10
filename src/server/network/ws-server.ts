@@ -1,7 +1,7 @@
 
 import * as http from 'http';
 import * as WebSocket from 'ws';
-import { getUserSession, WebSocket2, kickUserSession } from '../user/user-sessions';
+import UserSession, { WebSocket2 } from '../user/user-sessions';
 import { parseMessage } from '../../common/utility';
 import { ClientMessage, WSServerMessageTypes, WSClientMessageTypes } from '../../common/api/ws-messages';
 
@@ -15,7 +15,7 @@ export type FuncMessageHandler = (message: any) => void;
 
 function validateMessage(message: ClientMessage, socket: WebSocket2) {
 
-    const session = getUserSession(message.token);
+    const session = UserSession.getByToken(message.token);
     return message.token
         && session
         && (!session.socket || session.socket.sequenceId === socket.sequenceId)
@@ -31,7 +31,7 @@ function extractReason(message, socket: WebSocket2) {
         return "No token received!";
     }
 
-    const session = getUserSession(message.token);
+    const session = UserSession.getByToken(message.token);
     if (!session) {
         return "No user session!";
     }
@@ -56,7 +56,7 @@ function disconnectWebSocket(ws: WebSocket2) {
 
 function connectWebSocket(ws: WebSocket2, token: string) {
     
-    const session = getUserSession(token);
+    const session = UserSession.getByToken(token);
     if (session.socket) {
         disconnectWebSocket(session.socket);
     }
@@ -104,7 +104,7 @@ export function createWebSocketServer(server: http.Server) {
         ws.on("close", () => {
             console.log("Socket closed!");
             if (hasUserSession(ws)) {
-                kickUserSession(ws.userToken);
+                UserSession.kick(ws.userToken);
                 disconnectWebSocket(ws);
             }
         });

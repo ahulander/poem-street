@@ -1,11 +1,14 @@
 import * as WebSocket from 'ws';
 import { EventQueue } from "../../common/event-queue";
 import { setupMessageHandlers } from "./message-handlers";
-import { UnitData, tick } from "../../common/entities/unit";
+import { tick } from "../../common/entities/unit";
 import { vec2 } from "../../common/math/vector2";
 import { WSServerMessageTypes } from '../../common/api/ws-messages';
 import { GameWorld } from './game-world';
 import { setFixedInterval } from '../../common/utility';
+import { UnitManager } from '../../common/entities/unit-manager';
+import UserSession from '../user/user-sessions';
+import { Time } from '../../common/time';
 
 export enum EventTypes {
     CreateUnit = 0,
@@ -71,37 +74,28 @@ export class Game {
     }
 
     run() {
+        Time.deltaTime = 1.0;
         setFixedInterval(this.tick.bind(this), 1000);
     }
 
     private moveUnit(event: EventMoveUnit) {
-        const unit = this.units.find(u => u.id === event.unitId && u.userId === event.userId);
-        if (unit) {
+
+        const unit = this.units.findById(event.unitId);
+        if (unit && unit.userId === event.userId) {
             unit.moving = true;
             unit.target = vec2(event.x, event.y);
         }
         else {
             console.warn("Failed to move unit!");
             console.log(event);
+            console.log(unit);
         }
     }
 
     private createUnit(event: EventCreateUnit) {
         // TODO (Alex): Validate that the user is able to create a new user
 
-        if (this.units.filter(u => u.userId === event.userId).length > 0) {
-            console.log("User already have a unit!");
-            return;
-        }
-
-        this.units.push({
-            id: this.nextUnitId++,
-            moving: false,
-            position: vec2(event.x, event.y),
-            target: null,
-            type: event.unitType,
-            userId: event.userId
-        });
+        this.units.createUnit(event.userId, event.unitType, event.x, event.y);
     }
     
     private tick() {
@@ -109,29 +103,24 @@ export class Game {
 
         this.simulate();
 
-        // TODO (Alex): Do something cleaver here! We don't want to broadcast everything all the time!
         this.broadcastUnits(); 
     }
 
     private simulate() {
-        const unitCount = this.units.length;
-        for (let i = 0; i < unitCount; ++i) {
-            tick(this.units[i], 1.0);
-        }
+        this.units.foreach(tick);
     }
 
     private broadcastUnits() {
-        const unitCount = this.units.length;
-        for (let i = 0; i < unitCount; ++i) {
-            const unit = this.units[i];
-            this.wss.clients.forEach(ws => {
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({
-                        type: WSServerMessageTypes.Unit,
-                        unit: unit
-                    }));
-                }
+        UserSession.foreachOpenConnection((session) => {
+            
+            // TODO: Only send relevant data. No need to broadcast everything
+            this.units.foreach(unit => {
+                session.socket.send(JSON.stringify({
+                    type: WSServerMessageTypes.Unit,
+                    unit: unit
+                }));
             });
-        }
+
+        });
     }
 }

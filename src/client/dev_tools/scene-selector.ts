@@ -1,66 +1,31 @@
-import { SceneNames } from "../game/scenes/scene-utility";
 import { SceneManager } from "../game/scenes/scene-manager";
 import { InputManager } from "../input/input";
+import { UI } from "../rendering/ui/ui";
+import { UISceneSelector } from "../rendering/ui/components/dev/scene-selector";
 
-interface SceneSelector {
+interface SceneSelectorState {
+    sceneSelector?: UISceneSelector;
     open: boolean;
-    readonly root: HTMLElement;
 }
 
-function toggleSceneSelector(sceneSelector: SceneSelector) {
-    sceneSelector.open = !sceneSelector.open;
+const _state: SceneSelectorState = {
+    open: false
+};
 
-    if (sceneSelector.open) {
-        sceneSelector.root.classList.remove("hidden");
-    }
-    else {
-        sceneSelector.root.classList.add("hidden");
-    }
-}
+export function setupSceneSelector(ui: UI, inputManager: InputManager, sceneManager: SceneManager) {
 
-function createSceneSelectorElement(sceneManager: SceneManager) {
-    const root = document.createElement("div");
-    root.classList.add("scene-selector", "hidden");
-
-    const content = document.createElement("div");
-    content.classList.add("scene-selector__content");
-    root.appendChild(content);
-
-    const header = document.createElement("h2");
-    header.textContent = "Open Scene";
-    header.classList.add("scene-selector__header");
-    content.appendChild(header);
-
-    const body = document.createElement("div");
-    body.classList.add("scene-selector__body");
-    content.appendChild(body);
-
-    const excludedScenes = [ SceneNames.Game ];
-    const scenes = Object.keys(SceneNames).map(n => SceneNames[n]).filter(a => !excludedScenes.find(b => a === b));
-    
-    scenes.forEach(name => {
-        const button = document.createElement("button");
-        button.textContent = name;
-        button.onclick = () => {
-            sceneManager.gotoScene(name);
-        }
-        body.appendChild(button);
+    const sceneSelector = new UISceneSelector(sceneManager, () => {
+        ui.remove(_state.sceneSelector);
+        _state.open = false;
     });
-
-    return root;
-}
-
-export function setupSceneSelector(inputManager: InputManager, sceneManager: SceneManager) {
-
-    const root = createSceneSelectorElement(sceneManager);
-    document.body.appendChild(root);
-
-    const sceneSelector: SceneSelector = {
-        open: false,
-        root: root
-    };
+    _state.sceneSelector = sceneSelector;
 
     inputManager.registerKeyboardShortcut("Alt+§", () => {
-        toggleSceneSelector(sceneSelector);
+        _state.open = !_state.open;
+        if (_state.open) {
+            ui.add(_state.sceneSelector);
+        } else {
+            ui.remove(_state.sceneSelector);
+        }
     }, "Toggle scene menu", true);
 }

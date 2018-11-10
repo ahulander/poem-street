@@ -1,66 +1,36 @@
 import { InputManager } from "../input/input";
+import { UIInfo } from "../rendering/ui/components/dev/info";
+import { SceneManager } from "../game/scenes/scene-manager";
+import { UI } from "../rendering/ui/ui";
 
-export function setupInfoMenu(inputManager: InputManager) {
-    const root = document.createElement("div");
-    root.classList.add("scene-selector", "hidden");
+interface InfoMenuState {
+    uiElement?: UIInfo;
+    open: boolean;
+}
 
-    const content = document.createElement("div");
-    content.classList.add("scene-selector__content");
-    root.appendChild(content);
+const _state: InfoMenuState = {
+    open: false
+};
 
-    const header = document.createElement("h2");
-    header.textContent = "Info";
-    header.classList.add("scene-selector__header");
-    content.appendChild(header);
-
-    const body = document.createElement("div");
-    body.classList.add("scene-selector__body");
-
-    const table = document.createElement("table");
-    const thead = document.createElement("thead");
-    const trHead = document.createElement("tr");
-    const tdHeadShortcut = document.createElement("td");
-    const tdHeadComment = document.createElement("td");
-    const tdHeadGlobal = document.createElement("td");
-    tdHeadGlobal.appendChild(document.createTextNode("Global"));
-    tdHeadComment.appendChild(document.createTextNode("Comment"));
-    tdHeadShortcut.appendChild(document.createTextNode("Shortcut"));
-    trHead.appendChild(tdHeadShortcut);
-    trHead.appendChild(tdHeadComment);
-    trHead.appendChild(tdHeadGlobal);
-    thead.appendChild(trHead);
-    table.appendChild(thead);
-
-    const tbody = document.createElement("tbody");
+export function setupInfoMenu(ui: UI, inputManager: InputManager, sceneManager: SceneManager) {
     
-    table.appendChild(tbody);
-    body.appendChild(table);
-    content.appendChild(body);
-    document.body.appendChild(root);
+    const uiElement = new UIInfo(inputManager, () => {
+        _state.open = false;
+        ui.remove(_state.uiElement);
+    });
+    _state.uiElement = uiElement;
+
+    sceneManager.on("scenechanged", () => {
+        _state.uiElement.refresh();
+    });
 
     inputManager.registerKeyboardShortcut("F1", () => {
-        if (root.classList.contains("hidden")) {
-            root.classList.remove("hidden");
-            while (tbody.firstChild) {
-                tbody.removeChild(tbody.firstChild);
-            }
-            console.log();
-            inputManager.getShortcutInfo().forEach(info => {
-                const tr = document.createElement("tr");
-                const tdShortcut = document.createElement("td");
-                const tdComment = document.createElement("td");
-                const tdGlobal = document.createElement("td");
-                tdGlobal.appendChild(document.createTextNode(info.global ? "True" : "False"));
-                tdComment.appendChild(document.createTextNode(info.comment));
-                tdShortcut.appendChild(document.createTextNode(info.shortcut));
-                tr.appendChild(tdShortcut);
-                tr.appendChild(tdComment);
-                tr.appendChild(tdGlobal);
-                tbody.appendChild(tr);
-            });
+        _state.open = !_state.open;
+        if (_state.open) {
+            ui.add(_state.uiElement);
         }
         else {
-            root.classList.add("hidden");
+            ui.remove(_state.uiElement);
         }
     }, "Brings up the help menu", true);
 }

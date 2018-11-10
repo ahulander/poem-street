@@ -10,7 +10,9 @@ export function parseMessage<TType>(json: string): TType {
     return result;
 }
 
-export type FixedTimeout = number;
+export interface FixedTimeout {
+    id: number
+};
 
 let _nextIntervalId = 0;
 const _fixedIntervals: {[id: number]: NodeJS.Timeout | boolean} = {};
@@ -30,13 +32,13 @@ export function setFixedInterval(callback: () => void, targetMs: number): FixedT
         }
     }
     run();
-    return id;
+    return { id };
 }
 
-export function clearFixedInterval(id: FixedTimeout) {
-    if (_fixedIntervals[id]) {
-        clearTimeout(<NodeJS.Timeout>_fixedIntervals[id]);
-        delete _fixedIntervals[id];
+export function clearFixedInterval(timeout: FixedTimeout) {
+    if (_fixedIntervals[timeout.id]) {
+        clearTimeout(<NodeJS.Timeout>_fixedIntervals[timeout.id]);
+        delete _fixedIntervals[timeout.id];
     }
 }
 

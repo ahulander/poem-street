@@ -20,6 +20,8 @@ import { PassFog } from "./post_fx/pass-fog";
 import { FieldOfViewRenderer } from "../rendering/fov-renderer";
 import { SceneAnimatedSprite } from "./scenes/test/scene-animated-sprite";
 import { setFixedInterval } from "../../common/utility";
+import { UI } from "../rendering/ui/ui";
+import { Time } from "../../common/time";
 
 export function setupGame() {
 
@@ -37,15 +39,16 @@ export function setupGame() {
     
     Assets.loadAssets(gl);
 
-    const spriteMap = new RenderTarget(gl, 800, 400);
+    const spriteMap = new RenderTarget(gl, 800, 400, true);
     const tileMap = new RenderTarget(gl, 800, 400);
     const glowMap = new RenderTarget(gl, 800, 400);
     const fovMap = new RenderTarget(gl, 800, 400);
     
+    const ui = new UI(document.getElementById("ui_root"));
     const spriteRenderer = new SpriteRenderer(gl, spriteMap);
     const fovRenderer = new FieldOfViewRenderer(gl, fovMap);
     const inputManger = new InputManager(canvas);
-    const sceneManager = new SceneManager(gl, inputManger, spriteRenderer, fovRenderer);
+    const sceneManager = new SceneManager(gl, ui, inputManger, spriteRenderer, fovRenderer);
     const renderPipeline = new RenderPipeline(
         gl,
         spriteMap,
@@ -57,7 +60,7 @@ export function setupGame() {
             //PassBlur,
             PassFog
         ]
-     );
+    );
 
     sceneManager.register(
         SceneLogin,
@@ -70,19 +73,9 @@ export function setupGame() {
     );
     sceneManager.gotoScene(SceneNames.TestAnimatedSprite);
 
-    const lblFrames = document.createElement("span");
-    lblFrames.style.position = "absolute";
-    document.body.appendChild(lblFrames);
-
-    let frames = 0;
-    setFixedInterval(() => {
-        lblFrames.textContent = "" + frames;
-        frames = 0;
-    }, 1000);
-
     function tick() {
 
-        frames++;
+        Time.deltaTime = 1.0 / 60.0;
 
         spriteMap.clear();
         tileMap.clear();
@@ -98,6 +91,6 @@ export function setupGame() {
     setFixedInterval(tick, 16);   
 
     // Dev Tool, should probably be excluded in a production build =) 
-    setupSceneSelector(inputManger, sceneManager);
-    setupInfoMenu(inputManger);
+    setupSceneSelector(ui, inputManger, sceneManager);
+    setupInfoMenu(ui, inputManger, sceneManager);
 }

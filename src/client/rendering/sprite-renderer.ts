@@ -31,7 +31,7 @@ const spriteFragmentShader = `
 
     void main() {
 
-        highp float cutoff = 0.5;
+        highp float cutoff = 0.8;
         highp vec4 col = texture2D(uSpriteAtlas, uv);
 
         if (col.a < cutoff) {

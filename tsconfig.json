@@ -6,6 +6,8 @@
         "lib": [
             "dom",
             "es2015"
-        ]
+        ],
+        "jsx": "react",
+        "jsxFactory": "JSX.createElement"
     }
 }

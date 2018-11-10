@@ -29,7 +29,8 @@ export interface CMMoveUnit extends ClientMessage {
 export enum WSServerMessageTypes {
     Connected = 0,
     Disconnected,
-    Unit
+    Unit,
+    UnitMoved
 }
 
 export interface ServerMessage {
@@ -43,4 +44,10 @@ export interface SMConnectedToServer extends ServerMessage {
 
 export interface SMUnit extends ServerMessage {
     unit: UnitData;
+}
+
+export interface SMUnitMoved extends ServerMessage {
+    unitId: number;
+    targetX: number;
+    targetY: number;
 }

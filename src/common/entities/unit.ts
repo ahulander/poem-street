@@ -1,4 +1,5 @@
 import { vec2 } from "../math/vector2";
+import { Time } from "../time";
 
 export enum UnitType {
     Human = 0,
@@ -26,7 +27,7 @@ unitStats[UnitType.Dog] = {
     speed: 30
 };
 
-export function tick(unit: UnitData, deltaTime: number) {
+export function tick(unit: UnitData) {
     
     if (unit.moving) {
         const stats = unitStats[unit.type];
@@ -35,7 +36,7 @@ export function tick(unit: UnitData, deltaTime: number) {
         const maxDist = vec2.magnitude(direction);
         unit.position = vec2.add(
             unit.position,
-             vec2.scale(d, Math.min(stats.speed * deltaTime, maxDist))
+             vec2.scale(d, Math.min(stats.speed * Time.deltaTime, maxDist))
         );
 
         unit.moving = vec2.distance(unit.position, unit.target) > 1.0;

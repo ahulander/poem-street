@@ -1,33 +1,14 @@
 import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { Assets } from "../../../assets/assets";
-import { setFixedInterval, FixedTimeout, clearFixedInterval } from "../../../../common/utility";
 
 export class SceneSpriteStressTest extends Scene {
-
-    private interval: FixedTimeout;
-    private frameCount = 0;
 
     constructor() {
         super(SceneNames.TestSpriteStress);
     }
 
-    hello() {
-        this. interval = setFixedInterval(() => {
-            console.log(this.frameCount);
-            this.frameCount = 0;
-        }, 1000);
-
-        this.frameCount = 0;
-    }
-
-    goodbye() {
-        clearFixedInterval(this.interval);
-    }
-
     update () {
-        this.frameCount++;
-
         this.fovRenderer.clear();
 
         const count = 40000;
