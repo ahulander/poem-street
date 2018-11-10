@@ -1,0 +1,320 @@
+{ 
+ "columns":4,
+ "grid":
+    {
+     "height":32,
+     "orientation":"isometric",
+     "width":64
+    },
+ "image":"isometric_grass_and_water.png",
+ "imageheight":384,
+ "imagewidth":256,
+ "margin":0,
+ "name":"isometric_grass_and_water",
+ "spacing":0,
+ "terrains":[
+        {
+         "name":"Grass",
+         "tile":0
+        }, 
+        {
+         "name":"Water",
+         "tile":22
+        }],
+ "tilecount":24,
+ "tiledversion":"1.2.0",
+ "tileheight":64,
+ "tileoffset":
+    {
+     "x":0,
+     "y":16
+    },
+ "tiles":[
+        {
+         "id":0,
+         "terrain":[0, 0, 0, 0]
+        }, 
+        {
+         "id":1,
+         "terrain":[0, 0, 0, 0]
+        }, 
+        {
+         "id":2,
+         "terrain":[0, 0, 0, 0]
+        }, 
+        {
+         "id":3,
+         "terrain":[0, 0, 0, 0]
+        }, 
+        {
+         "id":4,
+         "terrain":[0, 0, 0, 1]
+        }, 
+        {
+         "id":5,
+         "terrain":[0, 0, 1, 0]
+        }, 
+        {
+         "id":6,
+         "terrain":[1, 0, 0, 0]
+        }, 
+        {
+         "id":7,
+         "terrain":[0, 1, 0, 0]
+        }, 
+        {
+         "id":8,
+         "terrain":[0, 1, 1, 1]
+        }, 
+        {
+         "id":9,
+         "terrain":[1, 0, 1, 1]
+        }, 
+        {
+         "id":10,
+         "terrain":[1, 1, 1, 0]
+        }, 
+        {
+         "id":11,
+         "terrain":[1, 1, 0, 1]
+        }, 
+        {
+         "id":12,
+         "terrain":[0, 0, 1, 1]
+        }, 
+        {
+         "id":13,
+         "terrain":[1, 0, 1, 0]
+        }, 
+        {
+         "id":14,
+         "terrain":[1, 1, 0, 0]
+        }, 
+        {
+         "id":15,
+         "terrain":[0, 1, 0, 1]
+        }, 
+        {
+         "id":16,
+         "terrain":[0, 0, 1, 1]
+        }, 
+        {
+         "id":17,
+         "terrain":[1, 0, 1, 0]
+        }, 
+        {
+         "id":18,
+         "terrain":[1, 1, 0, 0]
+        }, 
+        {
+         "id":19,
+         "terrain":[0, 1, 0, 1]
+        }, 
+        {
+         "id":20,
+         "terrain":[0, 1, 1, 0]
+        }, 
+        {
+         "id":21,
+         "terrain":[1, 0, 0, 1]
+        }, 
+        {
+         "id":22,
+         "terrain":[1, 1, 1, 1]
+        }, 
+        {
+         "id":23,
+         "terrain":[1, 1, 1, 1]
+        }],
+ "tilewidth":64,
+ "type":"tileset",
+ "version":1.2,
+ "wangsets":[
+        {
+         "cornercolors":[
+                {
+                 "color":"#8ab022",
+                 "name":"Grass",
+                 "probability":1,
+                 "tile":0
+                }, 
+                {
+                 "color":"#378dc2",
+                 "name":"Water",
+                 "probability":1,
+                 "tile":23
+                }],
+         "edgecolors":[],
+         "name":"Grass and Water",
+         "tile":15,
+         "wangtiles":[
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":0,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 1, 0, 1, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":1,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 1, 0, 1, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":2,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 1, 0, 1, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":3,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 1, 0, 1, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":4,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 2, 0, 1, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":5,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 1, 0, 2, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":6,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 1, 0, 1, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":7,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 1, 0, 1, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":8,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 2, 0, 2, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":9,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 2, 0, 2, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":10,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 1, 0, 2, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":11,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 2, 0, 1, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":12,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 2, 0, 2, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":13,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 1, 0, 2, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":14,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 1, 0, 1, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":15,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 2, 0, 1, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":16,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 2, 0, 2, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":17,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 1, 0, 2, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":18,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 1, 0, 1, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":19,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 2, 0, 1, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":20,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 1, 0, 2, 0, 1]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":21,
+                 "vflip":false,
+                 "wangid":[0, 1, 0, 2, 0, 1, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":22,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 2, 0, 2, 0, 2]
+                }, 
+                {
+                 "dflip":false,
+                 "hflip":false,
+                 "tileid":23,
+                 "vflip":false,
+                 "wangid":[0, 2, 0, 2, 0, 2, 0, 2]
+                }]
+        }]
+}

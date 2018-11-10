@@ -16,16 +16,21 @@ const app = express();
 app.use(express.static("public"));
 app.use(bodyParse.json());
 
+const server = http.createServer(app);
+const wss = createWebSocketServer(server);
+
+const game = new Game(wss);
+
 setupEndpoints(app);
 
 //initialize a simple http server
-const server = http.createServer(app);
 
-const wss = createWebSocketServer(server);
-const game = new Game(wss);
 game.run();
 
 //start our server
 server.listen(8080, () => {
     console.log(`Server started :)`);
 });
+
+//TODO: come up with a good way of sharing stuff around
+export default game;

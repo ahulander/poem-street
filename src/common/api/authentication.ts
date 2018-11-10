@@ -19,5 +19,6 @@ export interface LoginResponse {
 
 export enum Endpoints {
     login = "/login",
-    logout = "/logout"
+    logout = "/logout",
+    gameWorld = "/game"
 }
