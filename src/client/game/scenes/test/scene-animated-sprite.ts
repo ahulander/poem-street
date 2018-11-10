@@ -3,6 +3,7 @@ import { SceneNames } from "../scene-utility";
 import { Sprite } from "../../../rendering/sprite";
 import { Assets } from "../../../assets/assets";
 import { Time } from "../../../../common/time";
+import { setMainCameraMatrices } from "../../../rendering/camera";
 
 interface Frame {
     rect: number[];
@@ -77,7 +78,46 @@ export class SceneAnimatedSprite extends Scene {
         }
     }
 
+    private dx: number = 0;
+    private dy: number = 0;
+    private cx: number = 0;
+    private cy: number = 0;
+
+    hello() {
+        this.inputManager.registerKeyboardShortcut("A", () => {
+            this.dx = -1;
+        }, "Move left");
+
+        this.inputManager.registerKeyboardShortcut("D", () => {
+            this.dx = 1;
+        }, "Move right");
+
+        this.inputManager.registerKeyboardShortcut("S", () => {
+            this.dy = -1;
+        }, "Move down");
+
+        this.inputManager.registerKeyboardShortcut("W", () => {
+            this.dy = 1;
+        }, "Move up");
+
+        this.inputManager.registerKeyboardShortcut("Space", () => {
+            this.dx = 0;
+            this.dy = 0;
+        }, "Stop");
+    }
+
     update() {
+
+        this.cx = this.cx + this.dx * 100 * Time.deltaTime;
+        this.cy = this.cy + this.dy * 100 * Time.deltaTime;
+
+        setMainCameraMatrices({
+            width: 800,
+            height: 400,
+            x: this.cx,
+            y: this.cy
+        });
+
 
         this.fovRenderer.drawCircle({
             x: 0,

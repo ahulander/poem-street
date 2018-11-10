@@ -38,17 +38,15 @@ export class PassFog extends RenderPass {
     }
 
     private drawFog(gl: WebGLRenderingContext) {
-        
-        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        
+                
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.fovMap.texture);
 
         const now = (Date.now() - this.start) / 1000.0;
         
         const camera = getMainCameraMatrices();
-        this.screenOffset[0] = camera.camera.x;
-        this.screenOffset[1] = camera.camera.y;        
+        this.screenOffset[0] = camera.camera.x / camera.camera.width;
+        this.screenOffset[1] = camera.camera.y / -camera.camera.height;
 
         gl.useProgram(this.fogProgram.program);
         setUniform(this.fogProgram, "uFovMap", 0);

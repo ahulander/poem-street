@@ -15,13 +15,14 @@ export interface CameraMatrices {
 
 export function setMainCameraMatrices(camera: Camera) {
 
-    const x = camera.x;
-    const y = camera.y;
+    const x = Math.floor(camera.x);
+    const y = Math.floor(camera.y);
     const hw = camera.width / 2.0;
     const hh = camera.height / 2.0;
 
     mat4.ortho(_camera.projection, -hw, hw, -hh, hh, -100, 100);
     mat4.lookAt(_camera.view, [x,y,1], [x,y,0], [0, 1, 0]);
+    _camera.camera = camera;
 }
 
 export function getMainCameraMatrices() {
