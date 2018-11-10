@@ -10,6 +10,7 @@ import { EventCreateUnit, EventTypes, EventMoveUnit } from "./game";
 
 function connecting(message: ClientMessage) {
     const session = getUserSession(message.token);
+
     session.socket.send(JSON.stringify(<SMConnectedToServer>{
         type: WSServerMessageTypes.Connected,
         userId: session.userId
@@ -18,7 +19,7 @@ function connecting(message: ClientMessage) {
 
 function createUnit(eventQueue: EventQueue, message: CMCreateUnit) {
     const session = getUserSession(message.token);
-    
+
     // TODO (Alex): Validate that unit type, x and y is valid values
 
     eventQueue.queue<EventCreateUnit>({

@@ -2,6 +2,7 @@ import { Scene } from "../scene";
 import { SceneNames } from "../scene-utility";
 import { Sprite } from "../../../rendering/sprite";
 import { Assets } from "../../../assets/assets";
+import { Time } from "../../../../common/time";
 
 interface Frame {
     rect: number[];
@@ -86,7 +87,7 @@ export class SceneAnimatedSprite extends Scene {
         
         for (let i = 0; i < this.tiles.length; ++i) {
             const tile = this.tiles[i];
-            tile.x = Math.floor(tile.x - 32 * this.dt);
+            tile.x = Math.floor(tile.x - 32 * Time.deltaTime);
             
             if (tile.x < -320) {
                 tile.x = 320;

@@ -58,19 +58,11 @@ export class SceneGame extends Scene {
 
     update() {
 
-        const now = Date.now();
-        const dt = (now - this.lastFrame) / 1000.0;
-        this.lastFrame = now;
-
         for (let i = 0; i < this.units.length; ++i) {
-            tick(this.units[i], dt);
-        }
-
-
-
-        for (let i = 0; i < this.units.length; ++i) {
+            tick(this.units[i]);
             this.drawUnit(this.units[i]);
         }
+
     }
 
     private drawUnit(unit: UnitData) {

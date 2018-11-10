@@ -21,6 +21,7 @@ import { FieldOfViewRenderer } from "../rendering/fov-renderer";
 import { SceneAnimatedSprite } from "./scenes/test/scene-animated-sprite";
 import { setFixedInterval } from "../../common/utility";
 import { UI } from "../rendering/ui/ui";
+import { Time } from "../../common/time";
 
 export function setupGame() {
 
@@ -73,6 +74,9 @@ export function setupGame() {
     sceneManager.gotoScene(SceneNames.TestAnimatedSprite);
 
     function tick() {
+
+        Time.deltaTime = 1.0 / 60.0;
+
         spriteMap.clear();
         tileMap.clear();
         glowMap.clear();

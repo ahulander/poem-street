@@ -19,6 +19,26 @@ export interface UserSession {
 const userSessions: Map<UserSession> = {}
 const usernameToToken: Map<string> = {}
 
+export function foreachOpenUserSession(callback: (session: UserSession) => void) {
+    
+    const usersToKick: string[] = []
+
+    for (let token in userSessions) {
+        const session = userSessions[token];
+        
+        if (Date.now() > session.expires) {
+            usersToKick.push(token);
+        }
+        else if(session.socket.readyState === WebSocket.OPEN) {
+            callback(session);
+        }
+    }
+
+    for (let i = 0, length = usersToKick.length; i < length; ++i) {
+        kickUserSession(usersToKick[i]);
+    }
+}
+
 export function kickUserSession(token: string) {
     if (userSessions[token] && userSessions[token].socket) {
         console.log("Kicking out previous user session!");

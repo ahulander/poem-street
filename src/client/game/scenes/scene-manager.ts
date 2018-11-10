@@ -81,7 +81,6 @@ export class SceneManager {
 
     update() {
         if (this.currentScene) {
-            this.currentScene.dt = 1.0 / 60.0;
             this.currentScene.update();
         }
     }

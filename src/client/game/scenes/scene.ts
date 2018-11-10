@@ -33,8 +33,6 @@ export class Scene {
     readonly spriteRenderer: SpriteRenderer;
     readonly fovRenderer: FieldOfViewRenderer;
 
-    dt: number;
-
     constructor(key: SceneNames) {
         this.key = key;
         this.ui = _tempSceneManager.ui;
