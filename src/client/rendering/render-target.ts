@@ -8,7 +8,7 @@ export class RenderTarget {
     private height: number;
     private gl: WebGLRenderingContext;
 
-    constructor(gl: WebGLRenderingContext, width: number, height: number) {
+    constructor(gl: WebGLRenderingContext, width: number, height: number, createDepthBuffer = false) {
 
         this.gl = gl;
 
@@ -36,10 +36,25 @@ export class RenderTarget {
         const attachmentPoint = gl.COLOR_ATTACHMENT0;
         gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, target, 0);
 
+        gl.clearColor(0,1,1,1);
+        gl.clearDepth(1.0);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
+        gl.enable(gl.BLEND);
+
         this.texture = target;
         this.framebuffer = framebuffer;
         this.width = width;
         this.height = height;
+
+        // create a depth renderbuffer
+        if (createDepthBuffer) {
+            const depthBuffer = gl.createRenderbuffer();
+            gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
+            // make a depth buffer and the same size as the targetTexture
+            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
+        }
     }
 
     clear() {

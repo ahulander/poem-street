@@ -39,7 +39,7 @@ export function setupGame() {
     
     Assets.loadAssets(gl);
 
-    const spriteMap = new RenderTarget(gl, 800, 400);
+    const spriteMap = new RenderTarget(gl, 800, 400, true);
     const tileMap = new RenderTarget(gl, 800, 400);
     const glowMap = new RenderTarget(gl, 800, 400);
     const fovMap = new RenderTarget(gl, 800, 400);

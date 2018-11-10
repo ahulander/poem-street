@@ -5,6 +5,7 @@ export class UnitManager {
     private readonly allUnits: UnitData[] = [];
     
     private readonly unitByIds: {[id: number]: UnitData} = {};
+    private readonly unitsByUserId: {[userId: number]: UnitData[]} = {};
     private nextUnitId = 0;
     
 
@@ -12,9 +13,13 @@ export class UnitManager {
         return this.unitByIds[unitId];
     }
 
-    createUnit(userId: number, unitType: UnitType, x: number, y: number) {
+    findByUserId(userId: number) {
+        return this.unitsByUserId[userId];
+    }
+
+    createUnit(userId: number, unitType: UnitType, x: number, y: number, unitId: number = undefined) {
         const unit: UnitData = {
-            id: this.nextUnitId++,
+            id: unitId === undefined ? this.nextUnitId++ : unitId,
             userId: userId,
             type: unitType,
             position: {
@@ -55,9 +60,23 @@ export class UnitManager {
 
     private updateUnitCache(unit: UnitData) {
         this.unitByIds[unit.id] = unit;
+        if (!this.unitsByUserId[unit.userId]) {
+            this.unitsByUserId[unit.userId] = [];
+        }
+
+        const userUnits = this.unitsByUserId[unit.userId];
+        if (!userUnits.find(u => u.id === unit.id)) {
+            userUnits.push(unit);
+        }
+
+        console.log(this.unitByIds);
     }
 
     private deleteFromUnitCache(unit: UnitData) {
         delete this.unitByIds[unit.id];
+
+        const userUnits = this.unitsByUserId[unit.userId];
+        const index = userUnits.findIndex(u => u.id === unit.id);
+        userUnits.splice(index, 1);
     }
 }

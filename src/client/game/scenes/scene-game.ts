@@ -3,15 +3,14 @@ import { Scene } from "./scene";
 import { SceneNames } from "./scene-utility";
 import CWS, { FuncMessageHandler } from "../../api/ws-client";
 import { UnitData, tick, UnitType } from "../../../common/entities/unit";
-import { WSServerMessageTypes, SMUnit, CMMoveUnit, CMCreateUnit, WSClientMessageTypes } from "../../../common/api/ws-messages";
+import { WSServerMessageTypes, SMUnit, CMMoveUnit, CMCreateUnit, WSClientMessageTypes, SMUnitMoved } from "../../../common/api/ws-messages";
 import { Assets } from "../../assets/assets";
+import { UnitManager } from "../../../common/entities/unit-manager";
 
 export class SceneGame extends Scene {
     
-    private lastFrame = 0;
-
     private messageHandlers: FuncMessageHandler[] = [];
-    private units: UnitData[] = [];
+    private units: UnitManager = new UnitManager();
 
     constructor() {
         super(SceneNames.Game);
@@ -25,14 +24,16 @@ export class SceneGame extends Scene {
             this.gotoScene(SceneNames.Menu);
         }
         this.messageHandlers[WSServerMessageTypes.Unit] = this.receivedUnit.bind(this);
+        this.messageHandlers[WSServerMessageTypes.UnitMoved] = this.unitMoved.bind(this);
     }
 
     hello() {
         CWS.setMessageHandler(this.messageHandlers);
 
         this.inputManager.onRightClick = (mouse) => {
-            const unit = this.units.find(u => u.userId === CWS.getUserId());
-            if (unit) { 
+            const units = this.units.findByUserId(CWS.getUserId());
+            if (units && units[0]) { 
+                const unit = units[0];
                 unit.moving = false;
                 CWS.sendMessage(<CMMoveUnit>{
                     type: WSClientMessageTypes.MoveUnit,
@@ -44,8 +45,8 @@ export class SceneGame extends Scene {
         };
 
         this.inputManager.onLeftClick = (mouse) => {
-            const unit = this.units.find(u => u.userId === CWS.getUserId());
-            if (!unit) {
+            const units = this.units.findByUserId(CWS.getUserId());
+            if (!units || !units[0]) {
                 CWS.sendMessage(<CMCreateUnit>{
                     type: WSClientMessageTypes.CreateUnit,
                     unitType: Math.random() > 0.5 ? UnitType.Human : UnitType.Dog,
@@ -58,11 +59,10 @@ export class SceneGame extends Scene {
 
     update() {
 
-        for (let i = 0; i < this.units.length; ++i) {
-            tick(this.units[i]);
-            this.drawUnit(this.units[i]);
-        }
-
+        this.units.foreach(unit => {
+            tick(unit);
+            this.drawUnit(unit);
+        });
     }
 
     private drawUnit(unit: UnitData) {
@@ -87,15 +87,27 @@ export class SceneGame extends Scene {
         }
     }
 
+    private unitMoved(message: SMUnitMoved) {
+        const unit = this.units.findById(message.unitId);
+        if (unit) {
+            unit.target = {
+                x: message.targetX,
+                y: message.targetY
+            }
+            unit.moving = true;
+        }
+    }
+
     private receivedUnit(message: SMUnit) {
-        const unit = this.units.find(u => u.id === message.unit.id);
+        const unit = this.units.findById(message.unit.id);        
         if (unit) {
             unit.moving = message.unit.moving;
             unit.position = message.unit.position;
             unit.target = message.unit.target;
         }
         else {
-            this.units.push(message.unit);
+            const newUnit = message.unit;
+            this.units.createUnit(newUnit.userId, newUnit.type, newUnit.position.x, newUnit.position.y);
         }
     }
 }

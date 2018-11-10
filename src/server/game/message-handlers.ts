@@ -41,6 +41,15 @@ function moveUnit(eventQueue: EventQueue, message: CMMoveUnit) {
         x: message.x,
         y: message.y
     });
+
+    UserSession.foreachNearby(message.x, message.y, (session) => {
+        session.socket.send(JSON.stringify({
+            type: WSServerMessageTypes.UnitMoved,
+            unitId: message.unitId,
+            targetX: message.x,
+            targetY: message.y
+        }));
+    });
 }
 
 export function setupMessageHandlers(eventQueue: EventQueue) {

@@ -21,6 +21,11 @@ const usernameToToken: Map<string> = {}
 
 export namespace UserSession {
 
+    export function foreachNearby(worldX: number, worldY: number, callback: (session: UserSession) => void) {
+        // TODO: Cleaverness...
+        foreachOpenConnection(callback);
+    }
+
     export function foreachOpenConnection(callback: (session: UserSession) => void) {
         
         const usersToKick: string[] = []

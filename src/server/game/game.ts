@@ -5,7 +5,7 @@ import { tick } from "../../common/entities/unit";
 import { vec2 } from "../../common/math/vector2";
 import { WSServerMessageTypes } from '../../common/api/ws-messages';
 import { setFixedInterval } from '../../common/utility';
-import { UnitManager } from './unit-manager';
+import { UnitManager } from '../../common/entities/unit-manager';
 import UserSession from '../user/user-sessions';
 import { Time } from '../../common/time';
 
