@@ -6,7 +6,7 @@ import { vec2 } from "../../common/math/vector2";
 import { WSServerMessageTypes } from '../../common/api/ws-messages';
 import { setFixedInterval } from '../../common/utility';
 import { UnitManager } from './unit-manager';
-import { foreachOpenUserSession } from '../user/user-sessions';
+import UserSession from '../user/user-sessions';
 import { Time } from '../../common/time';
 
 export enum EventTypes {
@@ -94,7 +94,7 @@ export class Game {
     }
 
     private broadcastUnits() {
-        foreachOpenUserSession((session) => {
+        UserSession.foreachOpenConnection((session) => {
             
             // TODO: Only send relevant data. No need to broadcast everything
             this.units.foreach(unit => {

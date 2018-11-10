@@ -1,5 +1,5 @@
 import { setMessageHandlers, FuncMessageHandler } from "../network/ws-server";
-import { getUserSession } from "../user/user-sessions";
+import UserSession from "../user/user-sessions";
 import { ClientMessage, WSServerMessageTypes, WSClientMessageTypes, CMCreateUnit, CMMoveUnit, SMConnectedToServer } from "../../common/api/ws-messages";
 import { EventQueue } from "../../common/event-queue";
 import { EventCreateUnit, EventTypes, EventMoveUnit } from "./game";
@@ -9,7 +9,7 @@ import { EventCreateUnit, EventTypes, EventMoveUnit } from "./game";
 */
 
 function connecting(message: ClientMessage) {
-    const session = getUserSession(message.token);
+    const session = UserSession.getByToken(message.token);
 
     session.socket.send(JSON.stringify(<SMConnectedToServer>{
         type: WSServerMessageTypes.Connected,
@@ -18,7 +18,7 @@ function connecting(message: ClientMessage) {
 }
 
 function createUnit(eventQueue: EventQueue, message: CMCreateUnit) {
-    const session = getUserSession(message.token);
+    const session = UserSession.getByToken(message.token);
 
     // TODO (Alex): Validate that unit type, x and y is valid values
 
@@ -32,7 +32,7 @@ function createUnit(eventQueue: EventQueue, message: CMCreateUnit) {
 }
 
 function moveUnit(eventQueue: EventQueue, message: CMMoveUnit) {
-    const session = getUserSession(message.token);
+    const session = UserSession.getByToken(message.token);
 
     eventQueue.queue<EventMoveUnit>({
         type: EventTypes.MoveUnit,

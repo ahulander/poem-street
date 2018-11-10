@@ -1,6 +1,6 @@
 import { LoginRequest, LoginResponse, ErrorResponse, LogoutRequest } from "../../common/api/authentication";
 
-import { setUserSession, kickUserSession, getUserSession } from "../user/user-sessions";
+import UserSession from "../user/user-sessions";
 import Users from "../user/users";
 import { errorResponse, badRequest } from "./endpoint-helper";
 
@@ -19,7 +19,7 @@ export async function login(request: LoginRequest): Promise<LoginResponse | Erro
     }
 
     const token = Users.generateToken();
-    setUserSession(user.id, user.name, token);
+    UserSession.create(user.id, user.name, token);
     user.logins += 1;
 
     console.log(`${user.name}: ${user.logins}`);
@@ -33,8 +33,8 @@ export async function logout(request: LogoutRequest): Promise<ErrorResponse> {
         return badRequest();
     }
 
-    const session = getUserSession(request.token);
+    const session = UserSession.getByToken(request.token);
     if (session) {
-        kickUserSession(request.token);
+        UserSession.kick(request.token);
     }
 }
