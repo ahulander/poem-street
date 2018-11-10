@@ -16,7 +16,7 @@ export function errorResponse(statusCode: number, message: string): ErrorRespons
 export function registerPost(
     app: express.Application,
     url: string,
-    callback: (request: any) => Promise<any>
+    callback: (request: any, ...extras: any[]) => Promise<any>
 ) {
     app.post(url, async (request, response) => {
         response.append("Content-Type", "application/json");

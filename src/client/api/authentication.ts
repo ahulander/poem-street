@@ -8,3 +8,7 @@ export async function login(username: string, password: string) {
 export async function logout() {
     return post<LogoutRequest, ErrorResponse>(Endpoints.logout);
 }
+
+export async function getGameWorld() {
+  return await post<any, any>(Endpoints.gameWorld);
+}

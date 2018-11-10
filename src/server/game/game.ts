@@ -4,6 +4,7 @@ import { setupMessageHandlers } from "./message-handlers";
 import { tick } from "../../common/entities/unit";
 import { vec2 } from "../../common/math/vector2";
 import { WSServerMessageTypes } from '../../common/api/ws-messages';
+import { GameWorld } from './game-world';
 import { setFixedInterval } from '../../common/utility';
 import { UnitManager } from '../../common/entities/unit-manager';
 import UserSession from '../user/user-sessions';
@@ -42,7 +43,12 @@ export class Game {
 
     private eventQueue: EventQueue;
 
-    private units: UnitManager = new UnitManager();
+    private nextUnitId: number = 0;
+    private units: UnitData[] = [];
+
+    private gameWorld_: GameWorld;
+
+    private static instance_: Game;
 
     constructor(wss: WebSocket.Server) {
         
@@ -54,6 +60,17 @@ export class Game {
         this.eventQueue = new EventQueue(eventHandlers, eventToName);
 
         setupMessageHandlers(this.eventQueue);
+
+        this.gameWorld_ = new GameWorld(100);
+
+    }
+
+    public static get instance() : Game {
+      return this.instance_ || undefined;
+    }
+
+    public getGameWorldViewModel() {
+      return this.gameWorld_.getWorldViewModel();
     }
 
     run() {

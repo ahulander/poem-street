@@ -2,6 +2,5 @@
 /build
 /public/main.js
 /public/vendors~main.js
-/public/assets
 /src/types
 package-lock.json
