@@ -1,17 +1,15 @@
 import { SceneNames } from "./scene-utility";
 import { InputManager } from "../../input/input";
-import { SpriteRenderer } from "../../rendering/sprite-renderer";
 import { Scene, SceneConstructor, setTempSceneManager } from "./scene";
-import { FieldOfViewRenderer } from "../../rendering/fov-renderer";
 import { UI } from "../../rendering/ui/ui";
+import { IRenderManager } from "../../rendering/render-manager";
 
 export class SceneManager {
 
     readonly scenes: { [name: string]: Scene} = {};
     private currentScene: Scene;
     readonly inputManager: InputManager;
-    readonly spriteRenderer: SpriteRenderer;
-    readonly fovRenderer: FieldOfViewRenderer;
+    readonly renderManager: IRenderManager;
     readonly gl: WebGLRenderingContext;
     readonly ui: UI;
 
@@ -19,17 +17,13 @@ export class SceneManager {
     private onSceneChanged: () => void;
 
     constructor(
-        gl: WebGLRenderingContext,
         ui: UI,
         inputManager: InputManager,
-        spriteRenderer: SpriteRenderer,
-        fovRenderer: FieldOfViewRenderer
+        renderManager: IRenderManager
     ) {
-        this.gl = gl;
         this.ui = ui;
         this.inputManager = inputManager;
-        this.spriteRenderer = spriteRenderer;
-        this.fovRenderer = fovRenderer;
+        this.renderManager = renderManager;
     }
 
     on(event: "scenechanged", callback: () => void) {
@@ -83,5 +77,6 @@ export class SceneManager {
         if (this.currentScene) {
             this.currentScene.update();
         }
+        this.renderManager.draw();
     }
 }

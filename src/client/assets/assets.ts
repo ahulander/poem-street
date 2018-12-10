@@ -1,4 +1,4 @@
-import { Texture, loadImage } from "../rendering/textures";
+import { IRenderManager } from "../rendering/render-manager";
 
 export module Assets {
 
@@ -10,20 +10,20 @@ export module Assets {
         Guy
     }
 
-    const _assets: Texture[] = [];
-    let _defaultTexture: Texture;
+    let _renderManager: IRenderManager;
 
     export function getTexture(name: Textures) {
-        return _assets[name] || _defaultTexture;
+        return _renderManager.textures.get(name);
     }
 
-    export function loadAssets(gl: WebGLRenderingContext) {
+    export function loadAssets(renderManager: IRenderManager) {
+
+        _renderManager = renderManager;
 
         function load(name: Textures, url: string) {
-            _assets[name] = loadImage(gl, url);
+            _renderManager.textures.load(name, url);
         }
 
-        _defaultTexture = loadImage(gl, "assets/default.png");
         load(Textures.Tiles, "assets/tiles.png");
         load(Textures.RedTiles, "assets/tiles_red.png");
         load(Textures.Test, "assets/test.png");

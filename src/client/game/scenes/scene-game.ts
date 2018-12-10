@@ -66,7 +66,8 @@ export class SceneGame extends Scene {
     }
 
     private drawUnit(unit: UnitData) {
-        this.spriteRenderer.draw({
+        // Do we want to do it like this?
+        this.renderManager.spriteRenderer.draw({
             x: unit.position.x,
             y: unit.position.y,
             width: 32,
@@ -77,14 +78,6 @@ export class SceneGame extends Scene {
                 32,32
             ]
         });
-
-        if (unit.userId === CWS.getUserId()) {
-            this.fovRenderer.drawCircle({
-                radius: 200,
-                x: unit.position.x,
-                y: unit.position.y
-            });
-        }
     }
 
     private unitMoved(message: SMUnitMoved) {
